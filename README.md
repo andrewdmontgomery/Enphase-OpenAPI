@@ -14,6 +14,8 @@ This repository tracks an **unofficial** OpenAPI 3 definition for the Enphase v4
 
 These are required at runtime by the conversion script. No Python or local swagger JSON is needed because the script fetches the source spec on demand.
 
+Tooling for validation is pinned via `package.json` (currently `@redocly/cli@2.7.0`) so that local executions and CI use the same version.
+
 ## Regenerating the Spec
 
 Run:
@@ -32,11 +34,13 @@ The script will:
 
 ## Validating
 
-You can lint or bundle the spec using your preferred tooling, for example:
+You can lint the definition locally with:
 
 ```bash
-npx @redocly/cli lint openapi/system.yaml
+npm install
+npm run lint:openapi
 ```
+
 
 ## Next Steps
 

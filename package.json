@@ -1,0 +1,11 @@
+{
+  "name": "enphase-openapi",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "lint:openapi": "redocly lint openapi/system.yaml"
+  },
+  "devDependencies": {
+    "@redocly/cli": "2.7.0"
+  }
+}
