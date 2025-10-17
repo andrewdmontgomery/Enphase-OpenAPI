@@ -2,6 +2,12 @@ openapi: 3.0.0
 info:
   title: Monitoring API
   version: v4
+  license:
+    name: Custom
+    url: https://github.com/andrewdmontgomery/Enphase-OpenAPI
+security:
+  - oauth2: []
+    x-api-key: []
 paths:
   /api/v4/systems:
     get:
@@ -9,6 +15,7 @@ paths:
       description: Returns a list of systems for which the user can make API requests.
         By default, systems are returned in batches of 10. The maximum size is
         100.
+      operationId: listSystems
       tags:
         - System Details
       parameters:
@@ -78,6 +85,7 @@ paths:
                             allow public access.
                         timezone:
                           type: string
+                          nullable: true
                           description: Timezone to which the system belongs
                         address:
                           type: object
@@ -87,12 +95,15 @@ paths:
                               description: City in which the system is located
                             state:
                               type: string
+                              nullable: true
                               description: State in which the system is located
                             country:
                               type: string
+                              nullable: true
                               description: Country in which the system is located
                             postal_code:
                               type: string
+                              nullable: true
                               description: Postal Code of the system's location
                           description: Address object for the system. It can contain the following items
                         connection_type:
@@ -119,21 +130,26 @@ paths:
                             submitted a report
                         last_energy_at:
                           type: integer
+                          nullable: true
                           description: Timestamp (in epoch format) at which the systems's produced energy
                             was last reported. Even if the last produced energy
                             is 0, its timestamp will be returned.
                         operational_at:
                           type: integer
+                          nullable: true
                           description: Timestamp (in epoch format) at which this system became
                             operational. Corresponds to the system’s
                             interconnect time, if one is specified. Otherwise,
                             it is the system’s first reported interval end time.
                         attachment_type:
                           type: string
+                          nullable: true
                           description: Micro inverter attachment type. Available values are rack_mount,
                             zep, acm, bipv, frame_mount, railless_mount
                         interconnect_date:
-                          type: integer
+                          type: string
+                          format: date
+                          nullable: true
                           description: Date on which the system was approved to connect to the grid
                         reference:
                           type: string
@@ -149,56 +165,57 @@ paths:
                             system, those identifiers are included here.
                             Otherwise, this attribute is not returned.
                     description: "List of systems. It contains the following:"
-              examples:
-                response:
-                  value:
-                    total: 28
-                    current_page: 1
-                    size: 2
-                    count: 2
-                    items: systems
-                    systems:
-                      - system_id: 698910067
-                        name: Enphase System
-                        public_name: Residential System
-                        timezone: Australia/Sydney
-                        address:
-                          city: Sydney
-                          state: NSW
-                          country: AU
-                          postal_code: "2127"
-                        connection_type: ethernet
-                        energy_lifetime: -1
-                        energy_today: -1
-                        system_size: -1
-                        status: micro
-                        last_report_at: 1508174262
-                        last_energy_at: 1508174172
-                        operational_at: 1497445200
-                        attachment_type: null
-                        interconnect_date: null
-                        reference: "106015287"
-                        other_references:
-                          - "106015287"
-                      - system_id: 698906018
-                        name: Enphase Public System
-                        public_name: Residential System
-                        timezone: US/Pacific
-                        address:
-                          city: Los Angeles
-                          state: CA
-                          country: US
-                          postal_code: "94954"
-                        connection_type: ethernet
-                        energy_lifetime: -1
-                        energy_today: -1
-                        system_size: -1
-                        status: normal
-                        last_report_at: 1508174262
-                        last_energy_at: 1508174172
-                        operational_at: 1497445200
-                        attachment_type: null
-                        interconnect_date: null
+              example:
+                total: 28
+                current_page: 1
+                size: 2
+                count: 2
+                items: systems
+                systems:
+                  - system_id: 698910067
+                    name: Enphase System
+                    public_name: Residential System
+                    timezone: Australia/Sydney
+                    address:
+                      city: Sydney
+                      state: NSW
+                      country: AU
+                      postal_code: "2127"
+                    connection_type: ethernet
+                    energy_lifetime: -1
+                    energy_today: -1
+                    system_size: -1
+                    status: micro
+                    last_report_at: 1508174262
+                    last_energy_at: 1508174172
+                    operational_at: 1497445200
+                    attachment_type: null
+                    interconnect_date: null
+                    reference: "106015287"
+                    other_references:
+                      - "106015287"
+                  - system_id: 698906018
+                    name: Enphase Public System
+                    public_name: Residential System
+                    timezone: US/Pacific
+                    address:
+                      city: Los Angeles
+                      state: CA
+                      country: US
+                      postal_code: "94954"
+                    connection_type: ethernet
+                    energy_lifetime: -1
+                    energy_today: -1
+                    system_size: -1
+                    status: normal
+                    last_report_at: 1508174262
+                    last_energy_at: 1508174172
+                    operational_at: 1497445200
+                    attachment_type: null
+                    interconnect_date: null
+                    reference: "106015287"
+                    other_references:
+                      - "106015287"
         "401":
           description: Authentication Error
           content:
@@ -310,6 +327,7 @@ paths:
       summary: Search and filter systems
       description: Search and filter systems. Provide only valid values in request
         parameters. Empty values will be ignored. Invalid keys will be rejected.
+      operationId: searchSystems
       tags:
         - System Details
       parameters:
@@ -384,142 +402,159 @@ paths:
               schema:
                 type: object
                 properties:
-                  total:
-                    type: integer
-                    description: Total number of systems available
-                  current_page:
-                    type: integer
-                    description: Current page of the systems result. Default is 1
-                  size:
-                    type: integer
-                    description: Max number of records from API per page is 100. Default is 10.
-                  count:
-                    type: integer
-                    description: Total number of systems actually returned for the current page
-                  items:
-                    type: string
-                    description: Named key of the list data. In this endpoint, it is systems
-                  systems:
-                    type: array
+                    total:
+                      type: integer
+                      description: Total number of systems available
+                    current_page:
+                      type: integer
+                      description: Current page of the systems result. Default is 1
+                    size:
+                      type: integer
+                      description: Max number of records from API per page is 100. Default is 10.
+                    count:
+                      type: integer
+                      description: Total number of systems actually returned for the current page
                     items:
-                      properties:
-                        system_id:
-                          type: integer
-                          description: The unique numeric ID of the system
-                        name:
-                          type: string
-                          description: Name of the system
-                        public_name:
-                          type: string
-                          description: Name displayed on the public system page. Available values are All,
-                            Residential System, Commercial etc.
-                            Default='Residential System'. Only for systems that
-                            allow public access.
-                        timezone:
-                          type: string
-                          description: Timezone to which the system belongs
-                        address:
-                          type: object
-                          properties:
-                            state:
-                              type: string
-                              description: State in which the system is located
-                            country:
-                              type: string
-                              description: Country in which the system is located
-                            postal_code:
-                              type: string
-                              description: Postal Code of the system's location
-                          description: Address object for the system. It can contain the following items
-                        connection_type:
-                          type: string
-                          description: Connection Type of the system. Available values are ethernet,
-                            Wi-Fi, Cellular
-                        status:
-                          type: string
-                          description: System's status. Corresponding Enlighten values can be found in
-                            table added at the end of page.
-                        last_report_at:
-                          type: integer
-                          description: Timestamp (in epoch format) at which the system's Envoy last
-                            submitted a report
-                        last_energy_at:
-                          type: integer
-                          description: Timestamp (in epoch format) at which the systems's produced energy
-                            was last reported. Even if the last produced energy
-                            is 0, its timestamp will be returned.
-                        operational_at:
-                          type: integer
-                          description: Timestamp (in epoch format) at which this system became
-                            operational. Corresponds to the system’s
-                            interconnect time, if one is specified. Otherwise,
-                            it is the system’s first reported interval end time.
-                        attachment_type:
-                          type: string
-                          description: Micro inverter attachment type. Available values are rack_mount,
-                            zep, acm, bipv, frame_mount, railless_mount
-                        interconnect_date:
-                          type: integer
-                          description: Date on which the system was approved to connect to the grid
-                        energy_lifetime:
-                          type: integer
-                          description: Deprecated field. The API will always return this field as -1
-                        energy_today:
-                          type: integer
-                          description: Deprecated field. The API will always return this field as -1
-                        system_size:
-                          type: number
-                          format: float
-                          description: Deprecated field. The API will always return this field as -1
-                    description: List of filtered systems. It contains the following items
-              examples:
-                response:
-                  value:
-                    total: 28
-                    current_page: 1
-                    size: 2
-                    count: 2
-                    items: systems
+                      type: string
+                      description: Named key of the list data. In this endpoint, it is systems
                     systems:
-                      - system_id: 698910067
-                        name: Enphase System
-                        public_name: Residential System
-                        timezone: null
-                        address:
-                          ? state
-                          ? country
-                          ? postal_code
-                        connection_type: ethernet
-                        status: micro
-                        last_report_at: 1557400231
-                        last_energy_at: null
-                        operational_at: null
-                        attachment_type: null
-                        interconnect_date: null
-                        energy_lifetime: -1
-                        energy_today: -1
-                        system_size: -1
-                      - system_id: 698906018
-                        name: Enphase Public System
-                        public_name: Residential System
-                        timezone: US/Pacific
-                        address:
-                          state: CA
-                          country: US
-                          postal_code: "94954"
-                        connection_type: ethernet
-                        status: normal
-                        last_report_at: 1508174262
-                        last_energy_at: 1508174172
-                        operational_at: 1497445200
-                        attachment_type: null
-                        interconnect_date: null
-                        energy_lifetime: -1
-                        energy_today: -1
-                        system_size: -1
-                        reference: "106015287"
-                        other_references:
-                          - "106015287"
+                      type: array
+                      items:
+                        properties:
+                          system_id:
+                            type: integer
+                            description: The unique numeric ID of the system
+                          name:
+                            type: string
+                            description: Name of the system
+                          public_name:
+                            type: string
+                            description: Name displayed on the public system page. Available values are All,
+                              Residential System, Commercial etc.
+                              Default='Residential System'. Only for systems that
+                              allow public access.
+                          timezone:
+                            type: string
+                            nullable: true
+                            description: Timezone to which the system belongs
+                          address:
+                            type: object
+                            properties:
+                              state:
+                                type: string
+                                nullable: true
+                                description: State in which the system is located
+                              country:
+                                type: string
+                                nullable: true
+                                description: Country in which the system is located
+                              postal_code:
+                                type: string
+                                nullable: true
+                                description: Postal Code of the system's location
+                            description: Address object for the system. It can contain the following items
+                          connection_type:
+                            type: string
+                            description: Connection Type of the system. Available values are ethernet,
+                              Wi-Fi, Cellular
+                          status:
+                            type: string
+                            description: System's status. Corresponding Enlighten values can be found in
+                              table added at the end of page.
+                          last_report_at:
+                            type: integer
+                            nullable: true
+                            description: Timestamp (in epoch format) at which the system's Envoy last
+                              submitted a report
+                          last_energy_at:
+                            type: integer
+                            nullable: true
+                            description: Timestamp (in epoch format) at which the systems's produced energy
+                              was last reported. Even if the last produced energy
+                              is 0, its timestamp will be returned.
+                          operational_at:
+                            type: integer
+                            nullable: true
+                            description: Timestamp (in epoch format) at which this system became
+                              operational. Corresponds to the system’s
+                              interconnect time, if one is specified. Otherwise,
+                              it is the system’s first reported interval end time.
+                          attachment_type:
+                            type: string
+                            nullable: true
+                            description: Micro inverter attachment type. Available values are rack_mount,
+                              zep, acm, bipv, frame_mount, railless_mount
+                          interconnect_date:
+                            type: string
+                            format: date
+                            nullable: true
+                            description: Date on which the system was approved to connect to the grid
+                          energy_lifetime:
+                            type: integer
+                            description: Deprecated field. The API will always return this field as -1
+                          energy_today:
+                            type: integer
+                            description: Deprecated field. The API will always return this field as -1
+                          system_size:
+                            type: number
+                            format: float
+                            description: Deprecated field. The API will always return this field as -1
+                          reference:
+                            type: string
+                            nullable: true
+                            description: Company specific identifier for the system when available.
+                          other_references:
+                            type: array
+                            items:
+                              type: string
+                            description: Additional identifiers provided by other companies, when available.
+                      description: List of filtered systems. It contains the following items
+              example:
+                total: 28
+                current_page: 1
+                size: 2
+                count: 2
+                items: systems
+                systems:
+                  - system_id: 698910067
+                    name: Enphase System
+                    public_name: Residential System
+                    timezone: null
+                    address:
+                      ? state
+                      ? country
+                      ? postal_code
+                    connection_type: ethernet
+                    status: micro
+                    last_report_at: 1557400231
+                    last_energy_at: null
+                    operational_at: null
+                    attachment_type: null
+                    interconnect_date: null
+                    energy_lifetime: -1
+                    energy_today: -1
+                    system_size: -1
+                  - system_id: 698906018
+                    name: Enphase Public System
+                    public_name: Residential System
+                    timezone: US/Pacific
+                    address:
+                      state: CA
+                      country: US
+                      postal_code: "94954"
+                    connection_type: ethernet
+                    status: normal
+                    last_report_at: 1508174262
+                    last_energy_at: 1508174172
+                    operational_at: 1497445200
+                    attachment_type: null
+                    interconnect_date: null
+                    energy_lifetime: -1
+                    energy_today: -1
+                    system_size: -1
+                    reference: "106015287"
+                    other_references:
+                      - "106015287"
         "401":
           description: Authentication Error
           content:
@@ -628,16 +663,17 @@ paths:
     get:
       summary: Retrieves a System by id
       description: Retrieves a System by ID
+      operationId: getSystemById
       tags:
         - System Details
       parameters:
-        - name: system_id
-          in: path
-          description: The unique numeric ID of the system. If an empty value is passed in
-            the ID, this endpoint behaves as Fetch systems endpoint.
-          required: true
-          schema:
-            type: integer
+          - name: system_id
+            in: path
+            description: The unique numeric ID of the system. If an empty value is passed in
+              the ID, this endpoint behaves as Fetch systems endpoint.
+            required: true
+            schema:
+              type: integer
       responses:
         "200":
           description: System fetched
@@ -696,25 +732,31 @@ paths:
                       table added at the end of page.
                   last_report_at:
                     type: integer
+                    nullable: true
                     description: Timestamp (in epoch format) at which the system's Envoy last
                       submitted a report
                   last_energy_at:
                     type: integer
+                    nullable: true
                     description: Timestamp (in epoch format) at which the systems's produced energy
                       was last reported. Even if the last produced energy is 0,
                       its timestamp will be returned.
                   operational_at:
                     type: integer
+                    nullable: true
                     description: Timestamp (in epoch format) at which this system became
                       operational. Corresponds to the system’s interconnect
                       time, if one is specified. Otherwise, it is the system’s
                       first reported interval end time.
                   attachment_type:
                     type: string
+                    nullable: true
                     description: Micro inverter attachment type. Available values are rack_mount,
                       zep, acm, bipv, frame_mount, railless_mount
                   interconnect_date:
-                    type: integer
+                    type: string
+                    format: date
+                    nullable: true
                     description: Date on which the system was approved to connect to the grid
                   reference:
                     type: string
@@ -883,15 +925,16 @@ paths:
     get:
       summary: Retrieves a system summary
       description: Returns system summary based on the specified system ID.
+      operationId: getSystemSummary
       tags:
         - System Details
       parameters:
-        - name: system_id
-          in: path
-          description: The unique numeric ID of the system
-          required: true
-          schema:
-            type: integer
+          - name: system_id
+            in: path
+            description: The unique numeric ID of the system
+            required: true
+            schema:
+              type: integer
       responses:
         "200":
           description: System summary fetched
@@ -927,6 +970,7 @@ paths:
                     description: Total number of modules in the system
                   operational_at:
                     type: integer
+                    nullable: true
                     description: Timestamp (in epoch format) at which this system became
                       operational. Corresponds to the system’s interconnect
                       time, if one is specified. Otherwise, it is the system’s
@@ -935,7 +979,7 @@ paths:
                     type: integer
                     description: System size in watts
                   nmi:
-                    type: integer
+                    type: string
                     description: National Meter Identifier
                   source:
                     type: string
@@ -1121,6 +1165,7 @@ paths:
       summary: Retrieves devices for a given system
       description: Retrieves devices for a given system. Only devices that are active
         will be returned in the response.
+      operationId: listSystemDevices
       tags:
         - System Details
       parameters:
@@ -1174,17 +1219,34 @@ paths:
                             type: string
                           sku:
                             type: string
+                            nullable: true
                           model:
                             type: string
                           status:
                             type: string
                           active:
-                            type: string
+                            type: boolean
                           state:
                             type: string
                           config_type:
                             type: string
                           product_name:
+                            type: string
+                          cellular_modem:
+                            type: object
+                            properties:
+                              imei:
+                                type: string
+                              part_num:
+                                type: string
+                              sku:
+                                type: string
+                              plan_start_date:
+                                type: integer
+                              plan_end_date:
+                                type: integer
+                            description: Cellular modem details for gateways equipped with a modem.
+                          firmware:
                             type: string
               examples:
                 response:
@@ -1330,7 +1392,7 @@ paths:
                           sku: IQ-EVSE-NA-1060-0100-0100
                           model: IQ-EVSE-60R
                           status: normal
-                          active: "true"
+                          active: true
                           firmware: v0.04.17
         "401":
           description: Authentication Error
@@ -1486,6 +1548,7 @@ paths:
       description: Get system ID by passing envoy serial number. If the serial number
         of a retired envoy is passed in the request param, a 404 Not Found
         response will be returned.
+      operationId: retrieveSystemId
       tags:
         - System Details
       parameters:
@@ -1671,6 +1734,7 @@ paths:
 
 
         Many event types (though not all) come with predefined escalation criteria for alarms. When an event meets these configurations, it can trigger an alarm. For example, a common configuration might specify that an event should trigger an alarm if its status remains “Open” beyond a certain time threshold.
+      operationId: listSystemEvents
       tags:
         - System Details
       parameters:
@@ -1910,6 +1974,7 @@ paths:
 
 
         - But an event can be associated with only one alarm.
+      operationId: listSystemAlarms
       tags:
         - System Details
       parameters:
@@ -10472,6 +10537,17 @@ paths:
 servers:
   - url: https://api-qa2.enphaseenergy.com
 components:
+  securitySchemes:
+    oauth2:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: OAuth 2.0 bearer token obtained from Enphase authorization server.
+    x-api-key:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: API key associated with your Enphase developer application.
   schemas:
     ErrorResponse:
       type: object
