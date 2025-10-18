@@ -50,6 +50,7 @@ npm install
 npm run lint:openapi
 ```
 
+Pull requests automatically run the same lint check via the `OpenAPI Lint` GitHub Action.
 
 ## Next Steps
 
