@@ -8052,7 +8052,8 @@ paths:
                   description: Load Name of the load. Load Name cannot be changed. It is only used
                     to identify the dry contact that needs to be updated.
                 mode:
-                  type: string
+                  allOf:
+                    - $ref: "#/components/schemas/LoadControlMode"
                   description: Mode. Possible values are "Scheduled", "Basic",
                     "Advanced_BatteryPowered", "Manual_always_not_powered",
                     "Manual_always_powered", "Advanced_GeneratorPowered"
@@ -8096,7 +8097,8 @@ paths:
                           type: boolean
                           description: Indicates if the homeowner can override the load control settings
                         mode:
-                          type: string
+                          allOf:
+                            - $ref: "#/components/schemas/LoadControlMode"
                           description: Current load control configuration
                         soc_low:
                           type: integer
@@ -10671,6 +10673,16 @@ components:
         - Savings Mode
         - Full Backup
         - Self-consumption
+    LoadControlMode:
+      type: string
+      description: Supported load control operating modes.
+      enum:
+        - Scheduled
+        - Basic
+        - Advanced_BatteryPowered
+        - Manual_always_not_powered
+        - Manual_always_powered
+        - Advanced_GeneratorPowered
     DefaultCommandResponse:
       type: object
       properties:
