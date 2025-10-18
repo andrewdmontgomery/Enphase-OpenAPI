@@ -6743,9 +6743,10 @@ paths:
                   system_id:
                     type: integer
                   battery_mode:
-                    type: string
+                    allOf:
+                      - $ref: "#/components/schemas/BatteryMode"
                     description: Current battery mode of the system. Possible values are Savings
-                      Mode, Full Backup, and Self - Consumption
+                      Mode, Full Backup, and Self-consumption
                   reserve_soc:
                     type: integer
                     description: Reserve soc for the current mode
@@ -6776,7 +6777,7 @@ paths:
                 response:
                   value:
                     system_id: 1765
-                    battery_mode: Self - Consumption
+                    battery_mode: Self-consumption
                     reserve_soc: 95
                     energy_independence: enabled
                     charge_from_grid: disabled
@@ -6963,7 +6964,8 @@ paths:
               type: object
               properties:
                 battery_mode:
-                  type: string
+                  allOf:
+                    - $ref: "#/components/schemas/BatteryMode"
                   description: To update battery mode of the system (case sensitive) - "Savings
                     Mode" / "Self-consumption" / "Full Backup"
                 reserve_soc:
@@ -6994,7 +6996,8 @@ paths:
                   system_id:
                     type: integer
                   battery_mode:
-                    type: string
+                    allOf:
+                      - $ref: "#/components/schemas/BatteryMode"
                     description: Current battery mode of the system
                   reserve_soc:
                     type: integer
@@ -7026,7 +7029,7 @@ paths:
                 response:
                   value:
                     system_id: 1765
-                    battery_mode: self-consumption
+                    battery_mode: Self-consumption
                     reserve_soc: 95
                     energy_independence: enabled
                     charge_from_grid: disabled
@@ -8911,9 +8914,10 @@ paths:
                       data:
                         properties:
                           battery_mode:
+                            allOf:
+                              - $ref: "#/components/schemas/BatteryMode"
                             description: Battery mode of the site; Possible values are Savings Mode, Full
                               Backup, and Self-consumption
-                            type: string
                           battery_power:
                             description: Battery power in watts; Power will be positive in case of discharge
                               and negative in case of charge
@@ -10660,6 +10664,13 @@ components:
         - Info
         - Open
         - Closed
+    BatteryMode:
+      type: string
+      description: Battery operating mode configured for supported systems.
+      enum:
+        - Savings Mode
+        - Full Backup
+        - Self-consumption
     DefaultCommandResponse:
       type: object
       properties:
