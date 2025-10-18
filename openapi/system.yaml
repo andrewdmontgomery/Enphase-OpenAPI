@@ -1768,32 +1768,30 @@ paths:
                     type: integer
                     description: The unique numeric ID of the system.
                   events:
-                    type: object
+                    type: array
                     description: List of events
-                    additionalProperties:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          status:
-                            type: string
-                            description: "Represents the current status of the event. Possible values are:
-                              Info, Open, and Closed. Transient events have a
-                              status of Info. Stateful events are Open if
-                              event_end_time is null, and Closed if
-                              event_end_time is not null."
-                          event_type_id:
-                            type: integer
-                            description: Indicates the type of event to which the current event belongs.
-                          event_start_time:
-                            type: integer
-                            description: Timestamp when the event started (Unix Epoch)
-                          event_end_time:
-                            type: integer
-                            description: Timestamp when the event was cleared (Unix Epoch)
-                          serial_number:
-                            type: string
-                            description: Serial number of the impacted device.
+                    items:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                          description: "Represents the current status of the event. Possible values are:
+                            Info, Open, and Closed. Transient events have a
+                            status of Info. Stateful events are Open if
+                            event_end_time is null, and Closed if
+                            event_end_time is not null."
+                        event_type_id:
+                          type: integer
+                          description: Indicates the type of event to which the current event belongs.
+                        event_start_time:
+                          type: integer
+                          description: Timestamp when the event started (Unix Epoch)
+                        event_end_time:
+                          type: integer
+                          description: Timestamp when the event was cleared (Unix Epoch)
+                        serial_number:
+                          type: string
+                          description: Serial number of the impacted device.
               examples:
                 response:
                   value:
@@ -2014,49 +2012,46 @@ paths:
                     type: integer
                     description: The unique numeric ID of the system.
                   alarms:
-                    type: object
+                    type: array
                     description: List of alarms
-                    additionalProperties:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          id:
-                            type: string
-                            description: Unique alarm identifier.
-                          event_type_id:
-                            type: integer
-                            description: Associated event type ID
-                          cleared:
-                            type: boolean
-                            description: Alarm status (false = not cleared, true = cleared).
-                          alarm_start_time:
-                            type: integer
-                            description: Timestamp when the alarm was first triggered (Unix Epoch).
-                          alarm_end_time:
-                            type: integer
-                            description: Timestamp when the alarm was cleared (Unix Epoch)
-                          severity:
-                            type: integer
-                            description: "Severity level of the alarm: FATAL = 1; ERROR = 2; WARNING = 3;
-                              INFO = 4; DEBUG = 5; NONE = 6."
-                          events:
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          description: Unique alarm identifier.
+                        event_type_id:
+                          type: integer
+                          description: Associated event type ID
+                        cleared:
+                          type: boolean
+                          description: Alarm status (false = not cleared, true = cleared).
+                        alarm_start_time:
+                          type: integer
+                          description: Timestamp when the alarm was first triggered (Unix Epoch).
+                        alarm_end_time:
+                          type: integer
+                          nullable: true
+                          description: Timestamp when the alarm was cleared (Unix Epoch). Null if still open.
+                        severity:
+                          type: integer
+                          description: "Severity level of the alarm: FATAL = 1; ERROR = 2; WARNING = 3;
+                            INFO = 4; DEBUG = 5; NONE = 6."
+                        events:
+                          type: array
+                          description: List of devices impacted by the alarm.
+                          items:
                             type: object
-                            description: List of devices impacted by the alarm.
-                            additionalProperties:
-                              type: array
-                              items:
-                                type: object
-                                properties:
-                                  serial_number:
-                                    type: string
-                                    description: Device serial number.
-                                  start_date:
-                                    type: integer
-                                    description: Event start timestamp (Unix Epoch).
-                                  end_date:
-                                    type: integer
-                                    description: Event cleared timestamp (Unix Epoch).
+                            properties:
+                              serial_number:
+                                type: string
+                                description: Device serial number.
+                              start_date:
+                                type: integer
+                                description: Event start timestamp (Unix Epoch).
+                              end_date:
+                                type: integer
+                                description: Event cleared timestamp (Unix Epoch).
               examples:
                 response:
                   value:
@@ -2246,31 +2241,29 @@ paths:
                 type: object
                 properties:
                   event_types:
-                    type: object
-                    description: The list of event_types
-                    additionalProperties:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          event_type_id:
-                            type: integer
-                            description: Unique identifier of the event type.
-                          event_type_key:
-                            type: integer
-                            description: Another unique identifier of the event type.
-                          stateful:
-                            type: boolean
-                            description: Event state (true = stateful, false = transient)
-                          event_name:
-                            type: string
-                            description: Name of the event
-                          event_description:
-                            type: string
-                            description: Description of the event
-                          recommended_action:
-                            type: string
-                            description: Available recommended action for this event
+                    type: array
+                    description: List of event types
+                    items:
+                      type: object
+                      properties:
+                        event_type_id:
+                          type: integer
+                          description: Unique identifier of the event type.
+                        event_type_key:
+                          type: string
+                          description: Slug that identifies the event type.
+                        stateful:
+                          type: boolean
+                          description: Event state (true = stateful, false = transient)
+                        event_name:
+                          type: string
+                          description: Name of the event
+                        event_description:
+                          type: string
+                          description: Description of the event
+                        recommended_action:
+                          type: string
+                          description: Available recommended action for this event
               examples:
                 response:
                   value:
@@ -2437,16 +2430,17 @@ paths:
                   meter_readings:
                     type: array
                     items:
+                      type: object
                       properties:
-                        serial_number:
+                        serial_num:
                           type: string
-                          description: the serial number of the meter
+                          description: The serial number of the meter
                         value:
                           type: integer
-                          description: the meter reading, in Wh
+                          description: The meter reading, in Wh
                         read_at:
                           type: integer
-                          description: the time when the reading was taken, always prior or equal to the
+                          description: The time when the reading was taken, always prior or equal to the
                             requested 'end_at'
                     description: Production Meter Readings
                   meta:
@@ -3336,7 +3330,7 @@ paths:
                       included in the request, it is included here in the
                       response.
                   meter_start_date:
-                    type: integer
+                    type: string
                     description: The first day in the time series when measurements are taken from a
                       meter instead of from microinverters. This field is not
                       present unless the system has a meter.
@@ -3348,6 +3342,18 @@ paths:
                       the array may be empty.
                     items:
                       type: integer
+                  micro_production:
+                    type: array
+                    description: Array of production measurements reported by the microinverters.
+                    items:
+                      type: integer
+                    nullable: true
+                  meter_production:
+                    type: array
+                    description: Array of production measurements reported by the meter.
+                    items:
+                      type: integer
+                    nullable: true
                   meta:
                     type: object
                     properties:
@@ -4469,7 +4475,10 @@ paths:
                           part_number: 800-00107-r01
                           sku: M215-60-2LL-S22-NA
                           status: normal
-                          power_produced: 20
+                          power_produced:
+                            value: 20
+                            units: W
+                            precision: 0
                           proc_load: 521-00005-r00-v02.32.01
                           param_table: 549-00018-r00-v02.32.01
                           envoy_serial_number: "121842012242"
@@ -7814,8 +7823,8 @@ paths:
                           type: string
                           description: Name of the load
                         owner_can_override:
-                          type: string
-                          description: HOs ability to override the load control settings
+                          type: boolean
+                          description: Indicates if the homeowner can override the load control settings
                         mode:
                           type: string
                           description: Current load control configuration
@@ -8074,8 +8083,8 @@ paths:
                           type: string
                           description: Name of the load
                         owner_can_override:
-                          type: string
-                          description: HOs ability to override the load control settings
+                          type: boolean
+                          description: Indicates if the homeowner can override the load control settings
                         mode:
                           type: string
                           description: Current load control configuration
@@ -8372,14 +8381,16 @@ paths:
                     description: An array of telemetry objects. Each object contains
                     items:
                       type: array
+                      description: Telemetry readings grouped by device and channel.
                       items:
+                        type: object
                         properties:
                           end_at:
                             type: integer
                             description: End time of the telemetry interval
-                          wh_exported:
+                          wh_imported:
                             type: integer
-                            description: Energy imported (in Watt-Hours) during that period
+                            description: Energy imported (in Watt-hours) during that period
                   meta:
                     type: object
                     properties:
@@ -9606,9 +9617,11 @@ paths:
                             description: The reporting channel ID (applicable only in case of meters)
                           last_report_at:
                             type: integer
+                            nullable: true
                             description: Timestamp at which the device last reported
                           power:
                             type: integer
+                            nullable: true
                             description: Power reading at the last reported time
                           operational_mode:
                             type: string
@@ -9915,7 +9928,7 @@ paths:
           content:
             application/octet-stream:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/ErrorResponseDetailArray"
               examples:
                 response:
                   value:
@@ -10013,7 +10026,7 @@ paths:
           content:
             application/octet-stream:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/ErrorResponseDetailArray"
               examples:
                 response:
                   value:
@@ -10206,7 +10219,7 @@ paths:
           content:
             application/octet-stream:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/ErrorResponseDetailArray"
               examples:
                 response:
                   value:
@@ -10332,7 +10345,7 @@ paths:
           content:
             application/octet-stream:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/ErrorResponseDetailArray"
               examples:
                 response:
                   value:
@@ -10424,7 +10437,7 @@ paths:
           content:
             application/octet-stream:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/ErrorResponseDetailArray"
               examples:
                 response:
                   value:
@@ -10584,6 +10597,19 @@ components:
           type: string
         details:
           type: string
+          description: Additional error detail.
+    ErrorResponseDetailArray:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        details:
+          type: array
+          description: Additional error detail(s).
+          items:
+            type: string
     ErrorResponseArray:
       required:
         - message
