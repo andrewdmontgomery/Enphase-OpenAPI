@@ -7,7 +7,7 @@ info:
     url: https://github.com/andrewdmontgomery/Enphase-OpenAPI
 security:
   - oauth2: []
-    x-api-key: []
+    apiKey: []
 paths:
   /api/v4/systems:
     get:
@@ -10582,7 +10582,7 @@ components:
       scheme: bearer
       bearerFormat: JWT
       description: OAuth 2.0 bearer token obtained from Enphase authorization server.
-    x-api-key:
+    apiKey:
       type: apiKey
       in: header
       name: x-api-key
