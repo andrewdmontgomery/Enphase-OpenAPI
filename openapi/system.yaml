@@ -1780,7 +1780,8 @@ paths:
                       type: object
                       properties:
                         status:
-                          type: string
+                          allOf:
+                            - $ref: "#/components/schemas/EventStatus"
                           description: "Represents the current status of the event. Possible values are:
                             Info, Open, and Closed. Transient events have a
                             status of Info. Stateful events are Open if
@@ -10652,6 +10653,13 @@ components:
         - bipv
         - frame_mount
         - railless_mount
+    EventStatus:
+      type: string
+      description: Lifecycle state reported for events.
+      enum:
+        - Info
+        - Open
+        - Closed
     DefaultCommandResponse:
       type: object
       properties:
@@ -11278,7 +11286,8 @@ components:
       type: object
       properties:
         status:
-          type: string
+          allOf:
+            - $ref: "#/components/schemas/EventStatus"
           example: Info
         triggered_date:
           type: integer
