@@ -107,7 +107,8 @@ paths:
                               description: Postal Code of the system's location
                           description: Address object for the system. It can contain the following items
                         connection_type:
-                          type: string
+                          allOf:
+                            - $ref: "#/components/schemas/SystemConnectionType"
                           description: Connection Type of the system. Available values are ethernet,
                             Wi-Fi, Cellular
                         energy_lifetime:
@@ -143,6 +144,8 @@ paths:
                             it is the system’s first reported interval end time.
                         attachment_type:
                           type: string
+                          allOf:
+                            - $ref: "#/components/schemas/MicroinverterAttachmentType"
                           nullable: true
                           description: Micro inverter attachment type. Available values are rack_mount,
                             zep, acm, bipv, frame_mount, railless_mount
@@ -189,7 +192,7 @@ paths:
                     last_report_at: 1508174262
                     last_energy_at: 1508174172
                     operational_at: 1497445200
-                    attachment_type: null
+                    attachment_type: acm
                     interconnect_date: null
                     reference: "106015287"
                     other_references:
@@ -211,7 +214,7 @@ paths:
                     last_report_at: 1508174262
                     last_energy_at: 1508174172
                     operational_at: 1497445200
-                    attachment_type: null
+                    attachment_type: rack_mount
                     interconnect_date: null
                     reference: "106015287"
                     other_references:
@@ -454,7 +457,8 @@ paths:
                                 description: Postal Code of the system's location
                             description: Address object for the system. It can contain the following items
                           connection_type:
-                            type: string
+                            allOf:
+                              - $ref: "#/components/schemas/SystemConnectionType"
                             description: Connection Type of the system. Available values are ethernet,
                               Wi-Fi, Cellular
                           status:
@@ -481,6 +485,8 @@ paths:
                               it is the system’s first reported interval end time.
                           attachment_type:
                             type: string
+                            allOf:
+                              - $ref: "#/components/schemas/MicroinverterAttachmentType"
                             nullable: true
                             description: Micro inverter attachment type. Available values are rack_mount,
                               zep, acm, bipv, frame_mount, railless_mount
@@ -529,7 +535,7 @@ paths:
                     last_report_at: 1557400231
                     last_energy_at: null
                     operational_at: null
-                    attachment_type: null
+                    attachment_type: bipv
                     interconnect_date: null
                     energy_lifetime: -1
                     energy_today: -1
@@ -547,7 +553,7 @@ paths:
                     last_report_at: 1508174262
                     last_energy_at: 1508174172
                     operational_at: 1497445200
-                    attachment_type: null
+                    attachment_type: acm
                     interconnect_date: null
                     energy_lifetime: -1
                     energy_today: -1
@@ -10629,6 +10635,23 @@ components:
           type: string
           description: statusCode
           example: "405"
+    SystemConnectionType:
+      type: string
+      description: Connection type reported by the system.
+      enum:
+        - ethernet
+        - wifi
+        - cellular
+    MicroinverterAttachmentType:
+      type: string
+      description: Microinverter attachment style configured for the system.
+      enum:
+        - rack_mount
+        - zep
+        - acm
+        - bipv
+        - frame_mount
+        - railless_mount
     DefaultCommandResponse:
       type: object
       properties:
