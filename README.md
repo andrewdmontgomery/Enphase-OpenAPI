@@ -14,6 +14,15 @@ This repository tracks an **unofficial** OpenAPI 3 definition for the Enphase v4
 
 These are required at runtime by the conversion script. No Python or local swagger JSON is needed because the script fetches the source spec on demand.
 
+## Authentication
+
+According to Enphase’s guides, each Monitoring API request must include:
+
+- An OAuth 2.0 access token in the `Authorization: Bearer <token>` header.
+- Your application API key in the `key` header.
+
+The OpenAPI definition models both requirements via the `oauth2` bearer scheme and `apiKey` header security scheme.
+
 Tooling for validation is pinned via `package.json` (currently `@redocly/cli@2.7.0`) so that local executions and CI use the same version.
 
 ## Regenerating the Spec
@@ -41,6 +50,7 @@ npm install
 npm run lint:openapi
 ```
 
+Pull requests automatically run the same lint check via the `OpenAPI Lint` GitHub Action.
 
 ## Next Steps
 

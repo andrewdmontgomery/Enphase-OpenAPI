@@ -2,6 +2,12 @@ openapi: 3.0.0
 info:
   title: Monitoring API
   version: v4
+  license:
+    name: Custom
+    url: https://github.com/andrewdmontgomery/Enphase-OpenAPI
+security:
+  - oauth2: []
+    apiKey: []
 paths:
   /api/v4/systems:
     get:
@@ -9,6 +15,7 @@ paths:
       description: Returns a list of systems for which the user can make API requests.
         By default, systems are returned in batches of 10. The maximum size is
         100.
+      operationId: listSystems
       tags:
         - System Details
       parameters:
@@ -78,6 +85,7 @@ paths:
                             allow public access.
                         timezone:
                           type: string
+                          nullable: true
                           description: Timezone to which the system belongs
                         address:
                           type: object
@@ -87,12 +95,15 @@ paths:
                               description: City in which the system is located
                             state:
                               type: string
+                              nullable: true
                               description: State in which the system is located
                             country:
                               type: string
+                              nullable: true
                               description: Country in which the system is located
                             postal_code:
                               type: string
+                              nullable: true
                               description: Postal Code of the system's location
                           description: Address object for the system. It can contain the following items
                         connection_type:
@@ -119,21 +130,26 @@ paths:
                             submitted a report
                         last_energy_at:
                           type: integer
+                          nullable: true
                           description: Timestamp (in epoch format) at which the systems's produced energy
                             was last reported. Even if the last produced energy
                             is 0, its timestamp will be returned.
                         operational_at:
                           type: integer
+                          nullable: true
                           description: Timestamp (in epoch format) at which this system became
                             operational. Corresponds to the system’s
                             interconnect time, if one is specified. Otherwise,
                             it is the system’s first reported interval end time.
                         attachment_type:
                           type: string
+                          nullable: true
                           description: Micro inverter attachment type. Available values are rack_mount,
                             zep, acm, bipv, frame_mount, railless_mount
                         interconnect_date:
-                          type: integer
+                          type: string
+                          format: date
+                          nullable: true
                           description: Date on which the system was approved to connect to the grid
                         reference:
                           type: string
@@ -149,56 +165,57 @@ paths:
                             system, those identifiers are included here.
                             Otherwise, this attribute is not returned.
                     description: "List of systems. It contains the following:"
-              examples:
-                response:
-                  value:
-                    total: 28
-                    current_page: 1
-                    size: 2
-                    count: 2
-                    items: systems
-                    systems:
-                      - system_id: 698910067
-                        name: Enphase System
-                        public_name: Residential System
-                        timezone: Australia/Sydney
-                        address:
-                          city: Sydney
-                          state: NSW
-                          country: AU
-                          postal_code: "2127"
-                        connection_type: ethernet
-                        energy_lifetime: -1
-                        energy_today: -1
-                        system_size: -1
-                        status: micro
-                        last_report_at: 1508174262
-                        last_energy_at: 1508174172
-                        operational_at: 1497445200
-                        attachment_type: null
-                        interconnect_date: null
-                        reference: "106015287"
-                        other_references:
-                          - "106015287"
-                      - system_id: 698906018
-                        name: Enphase Public System
-                        public_name: Residential System
-                        timezone: US/Pacific
-                        address:
-                          city: Los Angeles
-                          state: CA
-                          country: US
-                          postal_code: "94954"
-                        connection_type: ethernet
-                        energy_lifetime: -1
-                        energy_today: -1
-                        system_size: -1
-                        status: normal
-                        last_report_at: 1508174262
-                        last_energy_at: 1508174172
-                        operational_at: 1497445200
-                        attachment_type: null
-                        interconnect_date: null
+              example:
+                total: 28
+                current_page: 1
+                size: 2
+                count: 2
+                items: systems
+                systems:
+                  - system_id: 698910067
+                    name: Enphase System
+                    public_name: Residential System
+                    timezone: Australia/Sydney
+                    address:
+                      city: Sydney
+                      state: NSW
+                      country: AU
+                      postal_code: "2127"
+                    connection_type: ethernet
+                    energy_lifetime: -1
+                    energy_today: -1
+                    system_size: -1
+                    status: micro
+                    last_report_at: 1508174262
+                    last_energy_at: 1508174172
+                    operational_at: 1497445200
+                    attachment_type: null
+                    interconnect_date: null
+                    reference: "106015287"
+                    other_references:
+                      - "106015287"
+                  - system_id: 698906018
+                    name: Enphase Public System
+                    public_name: Residential System
+                    timezone: US/Pacific
+                    address:
+                      city: Los Angeles
+                      state: CA
+                      country: US
+                      postal_code: "94954"
+                    connection_type: ethernet
+                    energy_lifetime: -1
+                    energy_today: -1
+                    system_size: -1
+                    status: normal
+                    last_report_at: 1508174262
+                    last_energy_at: 1508174172
+                    operational_at: 1497445200
+                    attachment_type: null
+                    interconnect_date: null
+                    reference: "106015287"
+                    other_references:
+                      - "106015287"
         "401":
           description: Authentication Error
           content:
@@ -310,6 +327,7 @@ paths:
       summary: Search and filter systems
       description: Search and filter systems. Provide only valid values in request
         parameters. Empty values will be ignored. Invalid keys will be rejected.
+      operationId: searchSystems
       tags:
         - System Details
       parameters:
@@ -384,142 +402,159 @@ paths:
               schema:
                 type: object
                 properties:
-                  total:
-                    type: integer
-                    description: Total number of systems available
-                  current_page:
-                    type: integer
-                    description: Current page of the systems result. Default is 1
-                  size:
-                    type: integer
-                    description: Max number of records from API per page is 100. Default is 10.
-                  count:
-                    type: integer
-                    description: Total number of systems actually returned for the current page
-                  items:
-                    type: string
-                    description: Named key of the list data. In this endpoint, it is systems
-                  systems:
-                    type: array
+                    total:
+                      type: integer
+                      description: Total number of systems available
+                    current_page:
+                      type: integer
+                      description: Current page of the systems result. Default is 1
+                    size:
+                      type: integer
+                      description: Max number of records from API per page is 100. Default is 10.
+                    count:
+                      type: integer
+                      description: Total number of systems actually returned for the current page
                     items:
-                      properties:
-                        system_id:
-                          type: integer
-                          description: The unique numeric ID of the system
-                        name:
-                          type: string
-                          description: Name of the system
-                        public_name:
-                          type: string
-                          description: Name displayed on the public system page. Available values are All,
-                            Residential System, Commercial etc.
-                            Default='Residential System'. Only for systems that
-                            allow public access.
-                        timezone:
-                          type: string
-                          description: Timezone to which the system belongs
-                        address:
-                          type: object
-                          properties:
-                            state:
-                              type: string
-                              description: State in which the system is located
-                            country:
-                              type: string
-                              description: Country in which the system is located
-                            postal_code:
-                              type: string
-                              description: Postal Code of the system's location
-                          description: Address object for the system. It can contain the following items
-                        connection_type:
-                          type: string
-                          description: Connection Type of the system. Available values are ethernet,
-                            Wi-Fi, Cellular
-                        status:
-                          type: string
-                          description: System's status. Corresponding Enlighten values can be found in
-                            table added at the end of page.
-                        last_report_at:
-                          type: integer
-                          description: Timestamp (in epoch format) at which the system's Envoy last
-                            submitted a report
-                        last_energy_at:
-                          type: integer
-                          description: Timestamp (in epoch format) at which the systems's produced energy
-                            was last reported. Even if the last produced energy
-                            is 0, its timestamp will be returned.
-                        operational_at:
-                          type: integer
-                          description: Timestamp (in epoch format) at which this system became
-                            operational. Corresponds to the system’s
-                            interconnect time, if one is specified. Otherwise,
-                            it is the system’s first reported interval end time.
-                        attachment_type:
-                          type: string
-                          description: Micro inverter attachment type. Available values are rack_mount,
-                            zep, acm, bipv, frame_mount, railless_mount
-                        interconnect_date:
-                          type: integer
-                          description: Date on which the system was approved to connect to the grid
-                        energy_lifetime:
-                          type: integer
-                          description: Deprecated field. The API will always return this field as -1
-                        energy_today:
-                          type: integer
-                          description: Deprecated field. The API will always return this field as -1
-                        system_size:
-                          type: number
-                          format: float
-                          description: Deprecated field. The API will always return this field as -1
-                    description: List of filtered systems. It contains the following items
-              examples:
-                response:
-                  value:
-                    total: 28
-                    current_page: 1
-                    size: 2
-                    count: 2
-                    items: systems
+                      type: string
+                      description: Named key of the list data. In this endpoint, it is systems
                     systems:
-                      - system_id: 698910067
-                        name: Enphase System
-                        public_name: Residential System
-                        timezone: null
-                        address:
-                          ? state
-                          ? country
-                          ? postal_code
-                        connection_type: ethernet
-                        status: micro
-                        last_report_at: 1557400231
-                        last_energy_at: null
-                        operational_at: null
-                        attachment_type: null
-                        interconnect_date: null
-                        energy_lifetime: -1
-                        energy_today: -1
-                        system_size: -1
-                      - system_id: 698906018
-                        name: Enphase Public System
-                        public_name: Residential System
-                        timezone: US/Pacific
-                        address:
-                          state: CA
-                          country: US
-                          postal_code: "94954"
-                        connection_type: ethernet
-                        status: normal
-                        last_report_at: 1508174262
-                        last_energy_at: 1508174172
-                        operational_at: 1497445200
-                        attachment_type: null
-                        interconnect_date: null
-                        energy_lifetime: -1
-                        energy_today: -1
-                        system_size: -1
-                        reference: "106015287"
-                        other_references:
-                          - "106015287"
+                      type: array
+                      items:
+                        properties:
+                          system_id:
+                            type: integer
+                            description: The unique numeric ID of the system
+                          name:
+                            type: string
+                            description: Name of the system
+                          public_name:
+                            type: string
+                            description: Name displayed on the public system page. Available values are All,
+                              Residential System, Commercial etc.
+                              Default='Residential System'. Only for systems that
+                              allow public access.
+                          timezone:
+                            type: string
+                            nullable: true
+                            description: Timezone to which the system belongs
+                          address:
+                            type: object
+                            properties:
+                              state:
+                                type: string
+                                nullable: true
+                                description: State in which the system is located
+                              country:
+                                type: string
+                                nullable: true
+                                description: Country in which the system is located
+                              postal_code:
+                                type: string
+                                nullable: true
+                                description: Postal Code of the system's location
+                            description: Address object for the system. It can contain the following items
+                          connection_type:
+                            type: string
+                            description: Connection Type of the system. Available values are ethernet,
+                              Wi-Fi, Cellular
+                          status:
+                            type: string
+                            description: System's status. Corresponding Enlighten values can be found in
+                              table added at the end of page.
+                          last_report_at:
+                            type: integer
+                            nullable: true
+                            description: Timestamp (in epoch format) at which the system's Envoy last
+                              submitted a report
+                          last_energy_at:
+                            type: integer
+                            nullable: true
+                            description: Timestamp (in epoch format) at which the systems's produced energy
+                              was last reported. Even if the last produced energy
+                              is 0, its timestamp will be returned.
+                          operational_at:
+                            type: integer
+                            nullable: true
+                            description: Timestamp (in epoch format) at which this system became
+                              operational. Corresponds to the system’s
+                              interconnect time, if one is specified. Otherwise,
+                              it is the system’s first reported interval end time.
+                          attachment_type:
+                            type: string
+                            nullable: true
+                            description: Micro inverter attachment type. Available values are rack_mount,
+                              zep, acm, bipv, frame_mount, railless_mount
+                          interconnect_date:
+                            type: string
+                            format: date
+                            nullable: true
+                            description: Date on which the system was approved to connect to the grid
+                          energy_lifetime:
+                            type: integer
+                            description: Deprecated field. The API will always return this field as -1
+                          energy_today:
+                            type: integer
+                            description: Deprecated field. The API will always return this field as -1
+                          system_size:
+                            type: number
+                            format: float
+                            description: Deprecated field. The API will always return this field as -1
+                          reference:
+                            type: string
+                            nullable: true
+                            description: Company specific identifier for the system when available.
+                          other_references:
+                            type: array
+                            items:
+                              type: string
+                            description: Additional identifiers provided by other companies, when available.
+                      description: List of filtered systems. It contains the following items
+              example:
+                total: 28
+                current_page: 1
+                size: 2
+                count: 2
+                items: systems
+                systems:
+                  - system_id: 698910067
+                    name: Enphase System
+                    public_name: Residential System
+                    timezone: null
+                    address:
+                      ? state
+                      ? country
+                      ? postal_code
+                    connection_type: ethernet
+                    status: micro
+                    last_report_at: 1557400231
+                    last_energy_at: null
+                    operational_at: null
+                    attachment_type: null
+                    interconnect_date: null
+                    energy_lifetime: -1
+                    energy_today: -1
+                    system_size: -1
+                  - system_id: 698906018
+                    name: Enphase Public System
+                    public_name: Residential System
+                    timezone: US/Pacific
+                    address:
+                      state: CA
+                      country: US
+                      postal_code: "94954"
+                    connection_type: ethernet
+                    status: normal
+                    last_report_at: 1508174262
+                    last_energy_at: 1508174172
+                    operational_at: 1497445200
+                    attachment_type: null
+                    interconnect_date: null
+                    energy_lifetime: -1
+                    energy_today: -1
+                    system_size: -1
+                    reference: "106015287"
+                    other_references:
+                      - "106015287"
         "401":
           description: Authentication Error
           content:
@@ -628,16 +663,17 @@ paths:
     get:
       summary: Retrieves a System by id
       description: Retrieves a System by ID
+      operationId: getSystemById
       tags:
         - System Details
       parameters:
-        - name: system_id
-          in: path
-          description: The unique numeric ID of the system. If an empty value is passed in
-            the ID, this endpoint behaves as Fetch systems endpoint.
-          required: true
-          schema:
-            type: integer
+          - name: system_id
+            in: path
+            description: The unique numeric ID of the system. If an empty value is passed in
+              the ID, this endpoint behaves as Fetch systems endpoint.
+            required: true
+            schema:
+              type: integer
       responses:
         "200":
           description: System fetched
@@ -696,25 +732,31 @@ paths:
                       table added at the end of page.
                   last_report_at:
                     type: integer
+                    nullable: true
                     description: Timestamp (in epoch format) at which the system's Envoy last
                       submitted a report
                   last_energy_at:
                     type: integer
+                    nullable: true
                     description: Timestamp (in epoch format) at which the systems's produced energy
                       was last reported. Even if the last produced energy is 0,
                       its timestamp will be returned.
                   operational_at:
                     type: integer
+                    nullable: true
                     description: Timestamp (in epoch format) at which this system became
                       operational. Corresponds to the system’s interconnect
                       time, if one is specified. Otherwise, it is the system’s
                       first reported interval end time.
                   attachment_type:
                     type: string
+                    nullable: true
                     description: Micro inverter attachment type. Available values are rack_mount,
                       zep, acm, bipv, frame_mount, railless_mount
                   interconnect_date:
-                    type: integer
+                    type: string
+                    format: date
+                    nullable: true
                     description: Date on which the system was approved to connect to the grid
                   reference:
                     type: string
@@ -883,15 +925,16 @@ paths:
     get:
       summary: Retrieves a system summary
       description: Returns system summary based on the specified system ID.
+      operationId: getSystemSummary
       tags:
         - System Details
       parameters:
-        - name: system_id
-          in: path
-          description: The unique numeric ID of the system
-          required: true
-          schema:
-            type: integer
+          - name: system_id
+            in: path
+            description: The unique numeric ID of the system
+            required: true
+            schema:
+              type: integer
       responses:
         "200":
           description: System summary fetched
@@ -927,6 +970,7 @@ paths:
                     description: Total number of modules in the system
                   operational_at:
                     type: integer
+                    nullable: true
                     description: Timestamp (in epoch format) at which this system became
                       operational. Corresponds to the system’s interconnect
                       time, if one is specified. Otherwise, it is the system’s
@@ -935,7 +979,7 @@ paths:
                     type: integer
                     description: System size in watts
                   nmi:
-                    type: integer
+                    type: string
                     description: National Meter Identifier
                   source:
                     type: string
@@ -1121,6 +1165,7 @@ paths:
       summary: Retrieves devices for a given system
       description: Retrieves devices for a given system. Only devices that are active
         will be returned in the response.
+      operationId: listSystemDevices
       tags:
         - System Details
       parameters:
@@ -1174,17 +1219,34 @@ paths:
                             type: string
                           sku:
                             type: string
+                            nullable: true
                           model:
                             type: string
                           status:
                             type: string
                           active:
-                            type: string
+                            type: boolean
                           state:
                             type: string
                           config_type:
                             type: string
                           product_name:
+                            type: string
+                          cellular_modem:
+                            type: object
+                            properties:
+                              imei:
+                                type: string
+                              part_num:
+                                type: string
+                              sku:
+                                type: string
+                              plan_start_date:
+                                type: integer
+                              plan_end_date:
+                                type: integer
+                            description: Cellular modem details for gateways equipped with a modem.
+                          firmware:
                             type: string
               examples:
                 response:
@@ -1330,7 +1392,7 @@ paths:
                           sku: IQ-EVSE-NA-1060-0100-0100
                           model: IQ-EVSE-60R
                           status: normal
-                          active: "true"
+                          active: true
                           firmware: v0.04.17
         "401":
           description: Authentication Error
@@ -1486,6 +1548,7 @@ paths:
       description: Get system ID by passing envoy serial number. If the serial number
         of a retired envoy is passed in the request param, a 404 Not Found
         response will be returned.
+      operationId: retrieveSystemId
       tags:
         - System Details
       parameters:
@@ -1671,6 +1734,7 @@ paths:
 
 
         Many event types (though not all) come with predefined escalation criteria for alarms. When an event meets these configurations, it can trigger an alarm. For example, a common configuration might specify that an event should trigger an alarm if its status remains “Open” beyond a certain time threshold.
+      operationId: listSystemEvents
       tags:
         - System Details
       parameters:
@@ -1704,32 +1768,30 @@ paths:
                     type: integer
                     description: The unique numeric ID of the system.
                   events:
-                    type: object
+                    type: array
                     description: List of events
-                    additionalProperties:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          status:
-                            type: string
-                            description: "Represents the current status of the event. Possible values are:
-                              Info, Open, and Closed. Transient events have a
-                              status of Info. Stateful events are Open if
-                              event_end_time is null, and Closed if
-                              event_end_time is not null."
-                          event_type_id:
-                            type: integer
-                            description: Indicates the type of event to which the current event belongs.
-                          event_start_time:
-                            type: integer
-                            description: Timestamp when the event started (Unix Epoch)
-                          event_end_time:
-                            type: integer
-                            description: Timestamp when the event was cleared (Unix Epoch)
-                          serial_number:
-                            type: string
-                            description: Serial number of the impacted device.
+                    items:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+                          description: "Represents the current status of the event. Possible values are:
+                            Info, Open, and Closed. Transient events have a
+                            status of Info. Stateful events are Open if
+                            event_end_time is null, and Closed if
+                            event_end_time is not null."
+                        event_type_id:
+                          type: integer
+                          description: Indicates the type of event to which the current event belongs.
+                        event_start_time:
+                          type: integer
+                          description: Timestamp when the event started (Unix Epoch)
+                        event_end_time:
+                          type: integer
+                          description: Timestamp when the event was cleared (Unix Epoch)
+                        serial_number:
+                          type: string
+                          description: Serial number of the impacted device.
               examples:
                 response:
                   value:
@@ -1910,6 +1972,7 @@ paths:
 
 
         - But an event can be associated with only one alarm.
+      operationId: listSystemAlarms
       tags:
         - System Details
       parameters:
@@ -1949,49 +2012,46 @@ paths:
                     type: integer
                     description: The unique numeric ID of the system.
                   alarms:
-                    type: object
+                    type: array
                     description: List of alarms
-                    additionalProperties:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          id:
-                            type: string
-                            description: Unique alarm identifier.
-                          event_type_id:
-                            type: integer
-                            description: Associated event type ID
-                          cleared:
-                            type: boolean
-                            description: Alarm status (false = not cleared, true = cleared).
-                          alarm_start_time:
-                            type: integer
-                            description: Timestamp when the alarm was first triggered (Unix Epoch).
-                          alarm_end_time:
-                            type: integer
-                            description: Timestamp when the alarm was cleared (Unix Epoch)
-                          severity:
-                            type: integer
-                            description: "Severity level of the alarm: FATAL = 1; ERROR = 2; WARNING = 3;
-                              INFO = 4; DEBUG = 5; NONE = 6."
-                          events:
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          description: Unique alarm identifier.
+                        event_type_id:
+                          type: integer
+                          description: Associated event type ID
+                        cleared:
+                          type: boolean
+                          description: Alarm status (false = not cleared, true = cleared).
+                        alarm_start_time:
+                          type: integer
+                          description: Timestamp when the alarm was first triggered (Unix Epoch).
+                        alarm_end_time:
+                          type: integer
+                          nullable: true
+                          description: Timestamp when the alarm was cleared (Unix Epoch). Null if still open.
+                        severity:
+                          type: integer
+                          description: "Severity level of the alarm: FATAL = 1; ERROR = 2; WARNING = 3;
+                            INFO = 4; DEBUG = 5; NONE = 6."
+                        events:
+                          type: array
+                          description: List of devices impacted by the alarm.
+                          items:
                             type: object
-                            description: List of devices impacted by the alarm.
-                            additionalProperties:
-                              type: array
-                              items:
-                                type: object
-                                properties:
-                                  serial_number:
-                                    type: string
-                                    description: Device serial number.
-                                  start_date:
-                                    type: integer
-                                    description: Event start timestamp (Unix Epoch).
-                                  end_date:
-                                    type: integer
-                                    description: Event cleared timestamp (Unix Epoch).
+                            properties:
+                              serial_number:
+                                type: string
+                                description: Device serial number.
+                              start_date:
+                                type: integer
+                                description: Event start timestamp (Unix Epoch).
+                              end_date:
+                                type: integer
+                                description: Event cleared timestamp (Unix Epoch).
               examples:
                 response:
                   value:
@@ -2163,6 +2223,7 @@ paths:
         event_types. The endpoint will return list of event_type_id along with
         the event_description and recommended_action. If an event_type_id is
         passed, this endpoint will return the detail of specific event_type
+      operationId: listEventTypes
       tags:
         - System Details
       parameters:
@@ -2180,31 +2241,29 @@ paths:
                 type: object
                 properties:
                   event_types:
-                    type: object
-                    description: The list of event_types
-                    additionalProperties:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          event_type_id:
-                            type: integer
-                            description: Unique identifier of the event type.
-                          event_type_key:
-                            type: integer
-                            description: Another unique identifier of the event type.
-                          stateful:
-                            type: boolean
-                            description: Event state (true = stateful, false = transient)
-                          event_name:
-                            type: string
-                            description: Name of the event
-                          event_description:
-                            type: string
-                            description: Description of the event
-                          recommended_action:
-                            type: string
-                            description: Available recommended action for this event
+                    type: array
+                    description: List of event types
+                    items:
+                      type: object
+                      properties:
+                        event_type_id:
+                          type: integer
+                          description: Unique identifier of the event type.
+                        event_type_key:
+                          type: string
+                          description: Slug that identifies the event type.
+                        stateful:
+                          type: boolean
+                          description: Event state (true = stateful, false = transient)
+                        event_name:
+                          type: string
+                          description: Name of the event
+                        event_description:
+                          type: string
+                          description: Description of the event
+                        recommended_action:
+                          type: string
+                          description: Available recommended action for this event
               examples:
                 response:
                   value:
@@ -2339,6 +2398,7 @@ paths:
         of the requested time, regardless of whether the meter is currently in
         service or retired. 
          Read_at is the time at which the reading was taken, and is always less than or equal to the requested end_at. Commonly, the reading will be within 30 minutes of the requested end_at. However, larger deltas can occur and do not necessarily mean there is a problem with the meter or the system. Systems that are configured to report infrequently can show large deltas on all meters, especially when end_at is close to the current time. Meters that have been retired from a system will show an end_at that doesn’t change, and that eventually is far away from the current time.
+      operationId: getProductionMeterReadings
       tags:
         - Site Level Production Monitoring
       parameters:
@@ -2370,16 +2430,17 @@ paths:
                   meter_readings:
                     type: array
                     items:
+                      type: object
                       properties:
-                        serial_number:
+                        serial_num:
                           type: string
-                          description: the serial number of the meter
+                          description: The serial number of the meter
                         value:
                           type: integer
-                          description: the meter reading, in Wh
+                          description: The meter reading, in Wh
                         read_at:
                           type: integer
-                          description: the time when the reading was taken, always prior or equal to the
+                          description: The time when the reading was taken, always prior or equal to the
                             requested 'end_at'
                     description: Production Meter Readings
                   meta:
@@ -2593,6 +2654,7 @@ paths:
         minutes in length and start at the top of the hour.
          Requests for times that do not fall on the 15-minute marks are rounded down. For example, a request for 08:01, 08:08, 08:11, or 08:14 (in epoch format) is treated as a request for 08:00 (in epoch format). Intervals are listed by their end times in epoch format.
          The requested date range in one API hit cannot be more than 7 days and the requested start at must be within 2 years from current time. If the start_at specified is earlier than the system’s first reported date, then midnight of the system’s first reported date is considered as start_at. Empty list will be returned if the last interval < requested start time < current time.
+      operationId: getRgmStats
       tags:
         - Site Level Production Monitoring
       parameters:
@@ -2969,6 +3031,7 @@ paths:
         consumption meter installed on the specified system. All measurements
         are in Watt hours.
          The time series includes one entry for each day from the start_date to the end_date. There are no gaps in the time series. If the response includes trailing zeroes, such as [909, 4970, 0, 0, 0], then no data has been reported for the last three days.
+      operationId: getConsumptionLifetime
       tags:
         - Site Level Consumption Monitoring
       parameters:
@@ -3215,6 +3278,7 @@ paths:
         lifetime. All measurements are in Watt hours.
          The time series includes one entry for each day from the start_date to the end_date with no gaps in the time series. If the response includes trailing zeroes, such as [909, 4970, 0, 0, 0], then no energy has been reported for the last days in the series.
          If the system has a meter, the time series includes data as measured by the microinverters until the first full day after the meter has been installed. Later, it switches to using the data as measured by the meter. This is called the “merged time series.”  The attribute “meter_start_date” indicates the time when the meter measurements begin to be used. You can retrieve the complete time series from the meter and from the microinverters by adding the parameter production=all to the request.
+      operationId: getEnergyLifetime
       tags:
         - Site Level Production Monitoring
       parameters:
@@ -3266,7 +3330,7 @@ paths:
                       included in the request, it is included here in the
                       response.
                   meter_start_date:
-                    type: integer
+                    type: string
                     description: The first day in the time series when measurements are taken from a
                       meter instead of from microinverters. This field is not
                       present unless the system has a meter.
@@ -3278,6 +3342,18 @@ paths:
                       the array may be empty.
                     items:
                       type: integer
+                  micro_production:
+                    type: array
+                    description: Array of production measurements reported by the microinverters.
+                    items:
+                      type: integer
+                    nullable: true
+                  meter_production:
+                    type: array
+                    description: Array of production measurements reported by the meter.
+                    items:
+                      type: integer
+                    nullable: true
                   meta:
                     type: object
                     properties:
@@ -3508,6 +3584,7 @@ paths:
         time series. If the response includes trailing zeroes, such as [909,
         4970, 0, 0, 0], then no energy has been charged/discharged for the last
         days in the series.
+      operationId: getBatteryLifetime
       tags:
         - Site Level Consumption Monitoring
       parameters:
@@ -3771,6 +3848,7 @@ paths:
         end_date with no gaps in the time series. If the response contains
         trailing zeroes, such as [909, 4970, 0, 0, 0], then no energy has been
         imported for the last days in the series.
+      operationId: getEnergyImportLifetime
       tags:
         - Site Level Consumption Monitoring
       parameters:
@@ -4019,6 +4097,7 @@ paths:
         end_date with no gaps in the time series. If the response contains
         trailing zeroes, such as [909, 4970, 0, 0, 0], then no energy has been
         exported for the last days in the series.
+      operationId: getEnergyExportLifetime
       tags:
         - Site Level Consumption Monitoring
       parameters:
@@ -4263,6 +4342,7 @@ paths:
       summary: inverters_summary_by_envoy_or_site
       description: Returns the microinverters summary based on the specified active
         envoy serial number or system.
+      operationId: getInvertersSummary
       tags:
         - System Details
       parameters:
@@ -4395,7 +4475,10 @@ paths:
                           part_number: 800-00107-r01
                           sku: M215-60-2LL-S22-NA
                           status: normal
-                          power_produced: 20
+                          power_produced:
+                            value: 20
+                            units: W
+                            precision: 0
                           proc_load: 521-00005-r00-v02.32.01
                           param_table: 549-00018-r00-v02.32.01
                           envoy_serial_number: "121842012242"
@@ -4543,6 +4626,7 @@ paths:
          The requested start date must be within 2 years from current date.
          By default start_at will appear in response. If start_date parameter is passed in the url, then start_date field will appear in response. 
         By default end_at will appear in response. If end_date parameter is passed in the url then end_date field will appear in response. Empty list will be returned if the last interval < requested start time < current time.
+      operationId: getProductionMicroTelemetry
       tags:
         - Site Level Production Monitoring
       parameters:
@@ -4855,6 +4939,7 @@ paths:
          The requested start date must be within 2 years from current date. 
          By default start_at will appear in response. If start_date parameter is passed in the url, then start_date field will appear in response. 
         By default end_at will appear in response. If end_date parameter is passed in the url then end_date field will appear in response. Empty list will be returned if the last interval < requested start time < current time.
+      operationId: getProductionMeterTelemetry
       tags:
         - Site Level Production Monitoring
       parameters:
@@ -5130,6 +5215,7 @@ paths:
          The requested start date must be within 2 years from current date. 
          By default start_at will appear in response. If start_date parameter is passed in the url, then start_date field will appear in response. 
         By default end_at will appear in response. If end_date parameter is passed in the url then end_date field will appear in response. Empty list will be returned if the last interval < requested start time < current time.
+      operationId: getBatteryTelemetry
       tags:
         - Site Level Consumption Monitoring
       parameters:
@@ -5432,6 +5518,7 @@ paths:
          The requested start date must be within 2 years from current date. 
          By default start_at will appear in response. If start_date parameter is passed in the url, then start_date field will appear in response. 
         By default end_at will appear in response. If end_date parameter is passed in the url then end_date field will appear in response. Empty list will be returned if the last interval < requested start time < current time.
+      operationId: getConsumptionMeterTelemetry
       tags:
         - Site Level Consumption Monitoring
       parameters:
@@ -5740,6 +5827,7 @@ paths:
          The requested start date must be within 2 years from current date. 
          By default start_at will appear in response. If start_date parameter is passed in the url, then start_date field will appear in response. 
         By default end_at will appear in response. If end_date parameter is passed in the url then end_date field will appear in response. Empty list will be returned if the last interval < requested start time < current time.
+      operationId: getMicroTelemetry
       parameters:
         - name: system_id
           in: path
@@ -6027,6 +6115,7 @@ paths:
          The requested start date must be within 2 years from current date. 
          By default start_at will appear in response. If start_date parameter is passed in the url, then start_date field will appear in response. 
         By default end_at will appear in response. If end_date parameter is passed in the url then end_date field will appear in response. Empty list will be returned if the last interval < requested start time < current time.
+      operationId: getAcbTelemetry
       parameters:
         - name: system_id
           in: path
@@ -6333,6 +6422,7 @@ paths:
          The requested start date must be within 2 years from current date. 
          By default start_at will appear in response. If start_date parameter is passed in the url, then start_date field will appear in response. 
         By default end_at will appear in response. If end_date parameter is passed in the url then end_date field will appear in response. Empty list will be returned if the last interval < requested start time < current time.
+      operationId: getEnchargeTelemetry
       parameters:
         - name: system_id
           in: path
@@ -6625,6 +6715,7 @@ paths:
     get:
       summary: Returns the current battery settings of a system
       description: Returns the current battery settings of a system
+      operationId: getSystemBatterySettings
       parameters:
         - name: system_id
           in: path
@@ -6850,6 +6941,7 @@ paths:
     put:
       summary: Updates the current battery settings of a system
       description: Updates the current battery settings of a system.
+      operationId: updateSystemBatterySettings
       parameters:
         - name: system_id
           in: path
@@ -7100,6 +7192,7 @@ paths:
     get:
       summary: Returns the current storm guard settings of a system
       description: Returns the current storm guard settings of a system
+      operationId: getSystemStormGuard
       parameters:
         - name: system_id
           in: path
@@ -7299,6 +7392,7 @@ paths:
     put:
       summary: Updates the current storm guard settings of a system
       description: Updates the current storm guard status of a system.
+      operationId: updateSystemStormGuard
       parameters:
         - name: system_id
           in: path
@@ -7512,6 +7606,7 @@ paths:
     get:
       summary: Returns the current grid status of a system
       description: Returns the current grid status of a system
+      operationId: getSystemGridStatus
       parameters:
         - name: system_id
           in: path
@@ -7697,6 +7792,7 @@ paths:
     get:
       summary: Returns the current load control settings of a system
       description: Returns the current load control settings of a system
+      operationId: getSystemLoadControl
       parameters:
         - name: system_id
           in: path
@@ -7727,8 +7823,8 @@ paths:
                           type: string
                           description: Name of the load
                         owner_can_override:
-                          type: string
-                          description: HOs ability to override the load control settings
+                          type: boolean
+                          description: Indicates if the homeowner can override the load control settings
                         mode:
                           type: string
                           description: Current load control configuration
@@ -7923,6 +8019,7 @@ paths:
     put:
       summary: Updates the current load control settings of a system
       description: Updates the current load control settings of a system.
+      operationId: updateSystemLoadControl
       parameters:
         - name: system_id
           in: path
@@ -7986,8 +8083,8 @@ paths:
                           type: string
                           description: Name of the load
                         owner_can_override:
-                          type: string
-                          description: HOs ability to override the load control settings
+                          type: boolean
+                          description: Indicates if the homeowner can override the load control settings
                         mode:
                           type: string
                           description: Current load control configuration
@@ -8216,6 +8313,7 @@ paths:
         requested start date must be within 2 years from current date. Empty
         list will be returned if the last interval < requested start time <
         current time."
+      operationId: getEnergyImportTelemetry
       tags:
         - Site Level Consumption Monitoring
       parameters:
@@ -8283,14 +8381,16 @@ paths:
                     description: An array of telemetry objects. Each object contains
                     items:
                       type: array
+                      description: Telemetry readings grouped by device and channel.
                       items:
+                        type: object
                         properties:
                           end_at:
                             type: integer
                             description: End time of the telemetry interval
-                          wh_exported:
+                          wh_imported:
                             type: integer
-                            description: Energy imported (in Watt-Hours) during that period
+                            description: Energy imported (in Watt-hours) during that period
                   meta:
                     type: object
                     properties:
@@ -8499,6 +8599,7 @@ paths:
         requested start date must be within 2 years from current date. Empty
         list will be returned if the last interval < requested start time <
         current time."
+      operationId: getEnergyExportTelemetry
       tags:
         - Site Level Consumption Monitoring
       parameters:
@@ -9473,6 +9574,7 @@ paths:
         Battery Power in Watts. If the last_report_at is older than 7 days for a
         specific device, “last_report_at”, “power” and “operational_mode”
         parameters will be returned in the response with the value as null.
+      operationId: getLatestSystemTelemetry
       tags:
         - Site Level Consumption Monitoring
       parameters:
@@ -9515,9 +9617,11 @@ paths:
                             description: The reporting channel ID (applicable only in case of meters)
                           last_report_at:
                             type: integer
+                            nullable: true
                             description: Timestamp at which the device last reported
                           power:
                             type: integer
+                            nullable: true
                             description: Power reading at the last reported time
                           operational_mode:
                             type: string
@@ -9824,7 +9928,7 @@ paths:
           content:
             application/octet-stream:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/ErrorResponseDetailArray"
               examples:
                 response:
                   value:
@@ -9922,7 +10026,7 @@ paths:
           content:
             application/octet-stream:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/ErrorResponseDetailArray"
               examples:
                 response:
                   value:
@@ -10115,7 +10219,7 @@ paths:
           content:
             application/octet-stream:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/ErrorResponseDetailArray"
               examples:
                 response:
                   value:
@@ -10241,7 +10345,7 @@ paths:
           content:
             application/octet-stream:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/ErrorResponseDetailArray"
               examples:
                 response:
                   value:
@@ -10333,7 +10437,7 @@ paths:
           content:
             application/octet-stream:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/ErrorResponseDetailArray"
               examples:
                 response:
                   value:
@@ -10472,6 +10576,17 @@ paths:
 servers:
   - url: https://api-qa2.enphaseenergy.com
 components:
+  securitySchemes:
+    oauth2:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: OAuth 2.0 bearer token obtained from Enphase authorization server.
+    apiKey:
+      type: apiKey
+      in: header
+      name: key
+      description: API key associated with your Enphase developer application.
   schemas:
     ErrorResponse:
       type: object
@@ -10482,6 +10597,19 @@ components:
           type: string
         details:
           type: string
+          description: Additional error detail.
+    ErrorResponseDetailArray:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        details:
+          type: array
+          description: Additional error detail(s).
+          items:
+            type: string
     ErrorResponseArray:
       required:
         - message
