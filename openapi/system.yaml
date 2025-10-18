@@ -4657,12 +4657,7 @@ paths:
           description: The granularity of the telemetry data. Possible values are 'week',
             'day', '15mins', '5mins'. Default is 'day'
           schema:
-            type: string
-            enum:
-              - 5mins
-              - 15mins
-              - day
-              - week
+            $ref: "#/components/schemas/TelemetryGranularity"
       responses:
         "200":
           description: Telemetry for all production micros
@@ -4675,7 +4670,8 @@ paths:
                     type: integer
                     description: The unique numeric ID of the system
                   granularity:
-                    type: string
+                    allOf:
+                      - $ref: "#/components/schemas/TelemetryGranularity"
                     description: The granularity of the telemetry data. Possible values are 'week',
                       'day', '15mins', '5mins'. Default is 'day'
                   total_devices:
@@ -4970,12 +4966,7 @@ paths:
           description: The granularity of the telemetry data. Possible values are 'week',
             'day', '15mins', '5mins'. Default is 'day'
           schema:
-            type: string
-            enum:
-              - 5mins
-              - 15mins
-              - day
-              - week
+            $ref: "#/components/schemas/TelemetryGranularity"
       responses:
         "200":
           description: Telemetry for all production meters
@@ -4988,7 +4979,8 @@ paths:
                     type: integer
                     description: The unique numeric ID of the system
                   granularity:
-                    type: string
+                    allOf:
+                      - $ref: "#/components/schemas/TelemetryGranularity"
                     description: The granularity of the telemetry data. Possible values are 'week',
                       'day', '15mins', '5mins'. Default is 'day'
                   total_devices:
@@ -5246,12 +5238,7 @@ paths:
           description: The granularity of the telemetry data. Possible values are 'week',
             'day', '15mins', '5mins'. Default is 'day'
           schema:
-            type: string
-            enum:
-              - 5mins
-              - 15mins
-              - day
-              - week
+            $ref: "#/components/schemas/TelemetryGranularity"
       responses:
         "200":
           description: Telemetry for batteries
@@ -5264,7 +5251,8 @@ paths:
                     type: integer
                     description: The unique numeric ID of the system
                   granularity:
-                    type: string
+                    allOf:
+                      - $ref: "#/components/schemas/TelemetryGranularity"
                     description: The granularity of the telemetry data. Possible values are 'week',
                       'day', '15mins', '5mins'. Default is 'day'
                   total_devices:
@@ -5553,12 +5541,7 @@ paths:
           description: The granularity of the telemetry data. Possible values are 'week',
             'day', '15mins', '5mins'. Default is 'day'
           schema:
-            type: string
-            enum:
-              - 5mins
-              - 15mins
-              - day
-              - week
+            $ref: "#/components/schemas/TelemetryGranularity"
       responses:
         "200":
           description: Telemetry for all consumption meters
@@ -5571,7 +5554,8 @@ paths:
                     type: integer
                     description: The unique numeric ID of the system
                   granularity:
-                    type: string
+                    allOf:
+                      - $ref: "#/components/schemas/TelemetryGranularity"
                     description: The granularity of the telemetry data. Possible values are 'week',
                       'day', '15mins', '5mins'. Default is 'day'
                   total_devices:
@@ -5862,12 +5846,7 @@ paths:
           description: The granularity of the telemetry data. Possible values are 'week',
             'day', '15mins', '5mins'. Default is 'day'
           schema:
-            type: string
-            enum:
-              - 5mins
-              - 15mins
-              - day
-              - week
+            $ref: "#/components/schemas/TelemetryGranularity"
       tags:
         - Device Level Production Monitoring
       responses:
@@ -5885,7 +5864,8 @@ paths:
                     type: string
                     description: The device serial number
                   granularity:
-                    type: string
+                    allOf:
+                      - $ref: "#/components/schemas/TelemetryGranularity"
                     description: The granularity of the telemetry data. Possible values are 'week',
                       'day', '15mins', '5mins'. Default is 'day'
                   total_devices:
@@ -6150,12 +6130,7 @@ paths:
           description: The granularity of the telemetry data. Possible values are 'week',
             'day', '15mins', '5mins'. Default is 'day'
           schema:
-            type: string
-            enum:
-              - 5mins
-              - 15mins
-              - day
-              - week
+            $ref: "#/components/schemas/TelemetryGranularity"
       tags:
         - Device Level Production Monitoring
       responses:
@@ -6173,7 +6148,8 @@ paths:
                     type: string
                     description: The device serial number
                   granularity:
-                    type: string
+                    allOf:
+                      - $ref: "#/components/schemas/TelemetryGranularity"
                     description: The granularity of the telemetry data. Possible values are 'week',
                       'day', '15mins', '5mins'. Default is 'day'
                   total_devices:
@@ -6457,12 +6433,7 @@ paths:
           description: The granularity of the telemetry data. Possible values are 'week',
             'day', '15mins', '5mins'. Default is 'day'
           schema:
-            type: string
-            enum:
-              - 5mins
-              - 15mins
-              - day
-              - week
+            $ref: "#/components/schemas/TelemetryGranularity"
       tags:
         - Device Level Production Monitoring
       responses:
@@ -6480,7 +6451,8 @@ paths:
                     type: string
                     description: The device serial number
                   granularity:
-                    type: string
+                    allOf:
+                      - $ref: "#/components/schemas/TelemetryGranularity"
                     description: The granularity of the telemetry data. Possible values are 'week',
                       'day', '15mins', '5mins'. Default is 'day'
                   total_devices:
@@ -8349,12 +8321,7 @@ paths:
           description: The granularity of the telemetry data. Possible values are 'week',
             'day', '15mins', '5mins'. Default is 'day'
           schema:
-            type: string
-            enum:
-              - 5mins
-              - 15mins
-              - day
-              - week
+            $ref: "#/components/schemas/TelemetryGranularity"
       responses:
         "200":
           description: Energy import telemetry in intervals
@@ -8367,7 +8334,8 @@ paths:
                     type: integer
                     description: The unique numeric ID of the system
                   granularity:
-                    type: string
+                    allOf:
+                      - $ref: "#/components/schemas/TelemetryGranularity"
                     description: The granularity of the telemetry data. Possible values are 'week',
                       'day', '15mins', '5mins'. Default is 'day'
                   total_devices:
@@ -8635,12 +8603,7 @@ paths:
           description: The granularity of the telemetry data. Possible values are 'week',
             'day', '15mins', '5mins'. Default is 'day'
           schema:
-            type: string
-            enum:
-              - 5mins
-              - 15mins
-              - day
-              - week
+            $ref: "#/components/schemas/TelemetryGranularity"
       responses:
         "200":
           description: Energy export telemetry in intervals
@@ -8653,7 +8616,8 @@ paths:
                     type: integer
                     description: The unique numeric ID of the system
                   granularity:
-                    type: string
+                    allOf:
+                      - $ref: "#/components/schemas/TelemetryGranularity"
                     description: The granularity of the telemetry data. Possible values are 'week',
                       'day', '15mins', '5mins'. Default is 'day'
                   total_devices:
@@ -10673,6 +10637,14 @@ components:
         - Savings Mode
         - Full Backup
         - Self-consumption
+    TelemetryGranularity:
+      type: string
+      description: Interval size used when returning telemetry time series.
+      enum:
+        - 5mins
+        - 15mins
+        - day
+        - week
     LoadControlMode:
       type: string
       description: Supported load control operating modes.
@@ -10707,7 +10679,8 @@ components:
       type: object
       properties:
         granularity:
-          type: string
+          allOf:
+            - $ref: "#/components/schemas/TelemetryGranularity"
           example: day
         consumption:
           type: array
