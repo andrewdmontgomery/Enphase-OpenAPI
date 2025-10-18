@@ -10585,7 +10585,7 @@ components:
     apiKey:
       type: apiKey
       in: header
-      name: x-api-key
+      name: key
       description: API key associated with your Enphase developer application.
   schemas:
     ErrorResponse:
