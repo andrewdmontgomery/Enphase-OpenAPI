@@ -2228,6 +2228,7 @@ paths:
         event_types. The endpoint will return list of event_type_id along with
         the event_description and recommended_action. If an event_type_id is
         passed, this endpoint will return the detail of specific event_type
+      operationId: listEventTypes
       tags:
         - System Details
       parameters:
@@ -2404,6 +2405,7 @@ paths:
         of the requested time, regardless of whether the meter is currently in
         service or retired. 
          Read_at is the time at which the reading was taken, and is always less than or equal to the requested end_at. Commonly, the reading will be within 30 minutes of the requested end_at. However, larger deltas can occur and do not necessarily mean there is a problem with the meter or the system. Systems that are configured to report infrequently can show large deltas on all meters, especially when end_at is close to the current time. Meters that have been retired from a system will show an end_at that doesn’t change, and that eventually is far away from the current time.
+      operationId: getProductionMeterReadings
       tags:
         - Site Level Production Monitoring
       parameters:
@@ -2658,6 +2660,7 @@ paths:
         minutes in length and start at the top of the hour.
          Requests for times that do not fall on the 15-minute marks are rounded down. For example, a request for 08:01, 08:08, 08:11, or 08:14 (in epoch format) is treated as a request for 08:00 (in epoch format). Intervals are listed by their end times in epoch format.
          The requested date range in one API hit cannot be more than 7 days and the requested start at must be within 2 years from current time. If the start_at specified is earlier than the system’s first reported date, then midnight of the system’s first reported date is considered as start_at. Empty list will be returned if the last interval < requested start time < current time.
+      operationId: getRgmStats
       tags:
         - Site Level Production Monitoring
       parameters:
@@ -3034,6 +3037,7 @@ paths:
         consumption meter installed on the specified system. All measurements
         are in Watt hours.
          The time series includes one entry for each day from the start_date to the end_date. There are no gaps in the time series. If the response includes trailing zeroes, such as [909, 4970, 0, 0, 0], then no data has been reported for the last three days.
+      operationId: getConsumptionLifetime
       tags:
         - Site Level Consumption Monitoring
       parameters:
@@ -3280,6 +3284,7 @@ paths:
         lifetime. All measurements are in Watt hours.
          The time series includes one entry for each day from the start_date to the end_date with no gaps in the time series. If the response includes trailing zeroes, such as [909, 4970, 0, 0, 0], then no energy has been reported for the last days in the series.
          If the system has a meter, the time series includes data as measured by the microinverters until the first full day after the meter has been installed. Later, it switches to using the data as measured by the meter. This is called the “merged time series.”  The attribute “meter_start_date” indicates the time when the meter measurements begin to be used. You can retrieve the complete time series from the meter and from the microinverters by adding the parameter production=all to the request.
+      operationId: getEnergyLifetime
       tags:
         - Site Level Production Monitoring
       parameters:
@@ -3573,6 +3578,7 @@ paths:
         time series. If the response includes trailing zeroes, such as [909,
         4970, 0, 0, 0], then no energy has been charged/discharged for the last
         days in the series.
+      operationId: getBatteryLifetime
       tags:
         - Site Level Consumption Monitoring
       parameters:
@@ -3836,6 +3842,7 @@ paths:
         end_date with no gaps in the time series. If the response contains
         trailing zeroes, such as [909, 4970, 0, 0, 0], then no energy has been
         imported for the last days in the series.
+      operationId: getEnergyImportLifetime
       tags:
         - Site Level Consumption Monitoring
       parameters:
@@ -4084,6 +4091,7 @@ paths:
         end_date with no gaps in the time series. If the response contains
         trailing zeroes, such as [909, 4970, 0, 0, 0], then no energy has been
         exported for the last days in the series.
+      operationId: getEnergyExportLifetime
       tags:
         - Site Level Consumption Monitoring
       parameters:
@@ -4328,6 +4336,7 @@ paths:
       summary: inverters_summary_by_envoy_or_site
       description: Returns the microinverters summary based on the specified active
         envoy serial number or system.
+      operationId: getInvertersSummary
       tags:
         - System Details
       parameters:
@@ -4608,6 +4617,7 @@ paths:
          The requested start date must be within 2 years from current date.
          By default start_at will appear in response. If start_date parameter is passed in the url, then start_date field will appear in response. 
         By default end_at will appear in response. If end_date parameter is passed in the url then end_date field will appear in response. Empty list will be returned if the last interval < requested start time < current time.
+      operationId: getProductionMicroTelemetry
       tags:
         - Site Level Production Monitoring
       parameters:
@@ -4920,6 +4930,7 @@ paths:
          The requested start date must be within 2 years from current date. 
          By default start_at will appear in response. If start_date parameter is passed in the url, then start_date field will appear in response. 
         By default end_at will appear in response. If end_date parameter is passed in the url then end_date field will appear in response. Empty list will be returned if the last interval < requested start time < current time.
+      operationId: getProductionMeterTelemetry
       tags:
         - Site Level Production Monitoring
       parameters:
@@ -5195,6 +5206,7 @@ paths:
          The requested start date must be within 2 years from current date. 
          By default start_at will appear in response. If start_date parameter is passed in the url, then start_date field will appear in response. 
         By default end_at will appear in response. If end_date parameter is passed in the url then end_date field will appear in response. Empty list will be returned if the last interval < requested start time < current time.
+      operationId: getBatteryTelemetry
       tags:
         - Site Level Consumption Monitoring
       parameters:
@@ -5497,6 +5509,7 @@ paths:
          The requested start date must be within 2 years from current date. 
          By default start_at will appear in response. If start_date parameter is passed in the url, then start_date field will appear in response. 
         By default end_at will appear in response. If end_date parameter is passed in the url then end_date field will appear in response. Empty list will be returned if the last interval < requested start time < current time.
+      operationId: getConsumptionMeterTelemetry
       tags:
         - Site Level Consumption Monitoring
       parameters:
@@ -5805,6 +5818,7 @@ paths:
          The requested start date must be within 2 years from current date. 
          By default start_at will appear in response. If start_date parameter is passed in the url, then start_date field will appear in response. 
         By default end_at will appear in response. If end_date parameter is passed in the url then end_date field will appear in response. Empty list will be returned if the last interval < requested start time < current time.
+      operationId: getMicroTelemetry
       parameters:
         - name: system_id
           in: path
@@ -6092,6 +6106,7 @@ paths:
          The requested start date must be within 2 years from current date. 
          By default start_at will appear in response. If start_date parameter is passed in the url, then start_date field will appear in response. 
         By default end_at will appear in response. If end_date parameter is passed in the url then end_date field will appear in response. Empty list will be returned if the last interval < requested start time < current time.
+      operationId: getAcbTelemetry
       parameters:
         - name: system_id
           in: path
@@ -6398,6 +6413,7 @@ paths:
          The requested start date must be within 2 years from current date. 
          By default start_at will appear in response. If start_date parameter is passed in the url, then start_date field will appear in response. 
         By default end_at will appear in response. If end_date parameter is passed in the url then end_date field will appear in response. Empty list will be returned if the last interval < requested start time < current time.
+      operationId: getEnchargeTelemetry
       parameters:
         - name: system_id
           in: path
@@ -6690,6 +6706,7 @@ paths:
     get:
       summary: Returns the current battery settings of a system
       description: Returns the current battery settings of a system
+      operationId: getSystemBatterySettings
       parameters:
         - name: system_id
           in: path
@@ -6915,6 +6932,7 @@ paths:
     put:
       summary: Updates the current battery settings of a system
       description: Updates the current battery settings of a system.
+      operationId: updateSystemBatterySettings
       parameters:
         - name: system_id
           in: path
@@ -7165,6 +7183,7 @@ paths:
     get:
       summary: Returns the current storm guard settings of a system
       description: Returns the current storm guard settings of a system
+      operationId: getSystemStormGuard
       parameters:
         - name: system_id
           in: path
@@ -7364,6 +7383,7 @@ paths:
     put:
       summary: Updates the current storm guard settings of a system
       description: Updates the current storm guard status of a system.
+      operationId: updateSystemStormGuard
       parameters:
         - name: system_id
           in: path
@@ -7577,6 +7597,7 @@ paths:
     get:
       summary: Returns the current grid status of a system
       description: Returns the current grid status of a system
+      operationId: getSystemGridStatus
       parameters:
         - name: system_id
           in: path
@@ -7762,6 +7783,7 @@ paths:
     get:
       summary: Returns the current load control settings of a system
       description: Returns the current load control settings of a system
+      operationId: getSystemLoadControl
       parameters:
         - name: system_id
           in: path
@@ -7988,6 +8010,7 @@ paths:
     put:
       summary: Updates the current load control settings of a system
       description: Updates the current load control settings of a system.
+      operationId: updateSystemLoadControl
       parameters:
         - name: system_id
           in: path
@@ -8281,6 +8304,7 @@ paths:
         requested start date must be within 2 years from current date. Empty
         list will be returned if the last interval < requested start time <
         current time."
+      operationId: getEnergyImportTelemetry
       tags:
         - Site Level Consumption Monitoring
       parameters:
@@ -8564,6 +8588,7 @@ paths:
         requested start date must be within 2 years from current date. Empty
         list will be returned if the last interval < requested start time <
         current time."
+      operationId: getEnergyExportTelemetry
       tags:
         - Site Level Consumption Monitoring
       parameters:
@@ -9538,6 +9563,7 @@ paths:
         Battery Power in Watts. If the last_report_at is older than 7 days for a
         specific device, “last_report_at”, “power” and “operational_mode”
         parameters will be returned in the response with the value as null.
+      operationId: getLatestSystemTelemetry
       tags:
         - Site Level Consumption Monitoring
       parameters:
