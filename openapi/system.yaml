@@ -107,7 +107,8 @@ paths:
                               description: Postal Code of the system's location
                           description: Address object for the system. It can contain the following items
                         connection_type:
-                          type: string
+                          allOf:
+                            - $ref: "#/components/schemas/SystemConnectionType"
                           description: Connection Type of the system. Available values are ethernet,
                             Wi-Fi, Cellular
                         energy_lifetime:
@@ -143,6 +144,8 @@ paths:
                             it is the system’s first reported interval end time.
                         attachment_type:
                           type: string
+                          allOf:
+                            - $ref: "#/components/schemas/MicroinverterAttachmentType"
                           nullable: true
                           description: Micro inverter attachment type. Available values are rack_mount,
                             zep, acm, bipv, frame_mount, railless_mount
@@ -189,7 +192,7 @@ paths:
                     last_report_at: 1508174262
                     last_energy_at: 1508174172
                     operational_at: 1497445200
-                    attachment_type: null
+                    attachment_type: acm
                     interconnect_date: null
                     reference: "106015287"
                     other_references:
@@ -211,7 +214,7 @@ paths:
                     last_report_at: 1508174262
                     last_energy_at: 1508174172
                     operational_at: 1497445200
-                    attachment_type: null
+                    attachment_type: rack_mount
                     interconnect_date: null
                     reference: "106015287"
                     other_references:
@@ -454,7 +457,8 @@ paths:
                                 description: Postal Code of the system's location
                             description: Address object for the system. It can contain the following items
                           connection_type:
-                            type: string
+                            allOf:
+                              - $ref: "#/components/schemas/SystemConnectionType"
                             description: Connection Type of the system. Available values are ethernet,
                               Wi-Fi, Cellular
                           status:
@@ -481,6 +485,8 @@ paths:
                               it is the system’s first reported interval end time.
                           attachment_type:
                             type: string
+                            allOf:
+                              - $ref: "#/components/schemas/MicroinverterAttachmentType"
                             nullable: true
                             description: Micro inverter attachment type. Available values are rack_mount,
                               zep, acm, bipv, frame_mount, railless_mount
@@ -529,7 +535,7 @@ paths:
                     last_report_at: 1557400231
                     last_energy_at: null
                     operational_at: null
-                    attachment_type: null
+                    attachment_type: bipv
                     interconnect_date: null
                     energy_lifetime: -1
                     energy_today: -1
@@ -547,7 +553,7 @@ paths:
                     last_report_at: 1508174262
                     last_energy_at: 1508174172
                     operational_at: 1497445200
-                    attachment_type: null
+                    attachment_type: acm
                     interconnect_date: null
                     energy_lifetime: -1
                     energy_today: -1
@@ -1774,7 +1780,8 @@ paths:
                       type: object
                       properties:
                         status:
-                          type: string
+                          allOf:
+                            - $ref: "#/components/schemas/EventStatus"
                           description: "Represents the current status of the event. Possible values are:
                             Info, Open, and Closed. Transient events have a
                             status of Info. Stateful events are Open if
@@ -4650,12 +4657,7 @@ paths:
           description: The granularity of the telemetry data. Possible values are 'week',
             'day', '15mins', '5mins'. Default is 'day'
           schema:
-            type: string
-            enum:
-              - 5mins
-              - 15mins
-              - day
-              - week
+            $ref: "#/components/schemas/TelemetryGranularity"
       responses:
         "200":
           description: Telemetry for all production micros
@@ -4668,7 +4670,8 @@ paths:
                     type: integer
                     description: The unique numeric ID of the system
                   granularity:
-                    type: string
+                    allOf:
+                      - $ref: "#/components/schemas/TelemetryGranularity"
                     description: The granularity of the telemetry data. Possible values are 'week',
                       'day', '15mins', '5mins'. Default is 'day'
                   total_devices:
@@ -4963,12 +4966,7 @@ paths:
           description: The granularity of the telemetry data. Possible values are 'week',
             'day', '15mins', '5mins'. Default is 'day'
           schema:
-            type: string
-            enum:
-              - 5mins
-              - 15mins
-              - day
-              - week
+            $ref: "#/components/schemas/TelemetryGranularity"
       responses:
         "200":
           description: Telemetry for all production meters
@@ -4981,7 +4979,8 @@ paths:
                     type: integer
                     description: The unique numeric ID of the system
                   granularity:
-                    type: string
+                    allOf:
+                      - $ref: "#/components/schemas/TelemetryGranularity"
                     description: The granularity of the telemetry data. Possible values are 'week',
                       'day', '15mins', '5mins'. Default is 'day'
                   total_devices:
@@ -5239,12 +5238,7 @@ paths:
           description: The granularity of the telemetry data. Possible values are 'week',
             'day', '15mins', '5mins'. Default is 'day'
           schema:
-            type: string
-            enum:
-              - 5mins
-              - 15mins
-              - day
-              - week
+            $ref: "#/components/schemas/TelemetryGranularity"
       responses:
         "200":
           description: Telemetry for batteries
@@ -5257,7 +5251,8 @@ paths:
                     type: integer
                     description: The unique numeric ID of the system
                   granularity:
-                    type: string
+                    allOf:
+                      - $ref: "#/components/schemas/TelemetryGranularity"
                     description: The granularity of the telemetry data. Possible values are 'week',
                       'day', '15mins', '5mins'. Default is 'day'
                   total_devices:
@@ -5546,12 +5541,7 @@ paths:
           description: The granularity of the telemetry data. Possible values are 'week',
             'day', '15mins', '5mins'. Default is 'day'
           schema:
-            type: string
-            enum:
-              - 5mins
-              - 15mins
-              - day
-              - week
+            $ref: "#/components/schemas/TelemetryGranularity"
       responses:
         "200":
           description: Telemetry for all consumption meters
@@ -5564,7 +5554,8 @@ paths:
                     type: integer
                     description: The unique numeric ID of the system
                   granularity:
-                    type: string
+                    allOf:
+                      - $ref: "#/components/schemas/TelemetryGranularity"
                     description: The granularity of the telemetry data. Possible values are 'week',
                       'day', '15mins', '5mins'. Default is 'day'
                   total_devices:
@@ -5855,12 +5846,7 @@ paths:
           description: The granularity of the telemetry data. Possible values are 'week',
             'day', '15mins', '5mins'. Default is 'day'
           schema:
-            type: string
-            enum:
-              - 5mins
-              - 15mins
-              - day
-              - week
+            $ref: "#/components/schemas/TelemetryGranularity"
       tags:
         - Device Level Production Monitoring
       responses:
@@ -5878,7 +5864,8 @@ paths:
                     type: string
                     description: The device serial number
                   granularity:
-                    type: string
+                    allOf:
+                      - $ref: "#/components/schemas/TelemetryGranularity"
                     description: The granularity of the telemetry data. Possible values are 'week',
                       'day', '15mins', '5mins'. Default is 'day'
                   total_devices:
@@ -6143,12 +6130,7 @@ paths:
           description: The granularity of the telemetry data. Possible values are 'week',
             'day', '15mins', '5mins'. Default is 'day'
           schema:
-            type: string
-            enum:
-              - 5mins
-              - 15mins
-              - day
-              - week
+            $ref: "#/components/schemas/TelemetryGranularity"
       tags:
         - Device Level Production Monitoring
       responses:
@@ -6166,7 +6148,8 @@ paths:
                     type: string
                     description: The device serial number
                   granularity:
-                    type: string
+                    allOf:
+                      - $ref: "#/components/schemas/TelemetryGranularity"
                     description: The granularity of the telemetry data. Possible values are 'week',
                       'day', '15mins', '5mins'. Default is 'day'
                   total_devices:
@@ -6450,12 +6433,7 @@ paths:
           description: The granularity of the telemetry data. Possible values are 'week',
             'day', '15mins', '5mins'. Default is 'day'
           schema:
-            type: string
-            enum:
-              - 5mins
-              - 15mins
-              - day
-              - week
+            $ref: "#/components/schemas/TelemetryGranularity"
       tags:
         - Device Level Production Monitoring
       responses:
@@ -6473,7 +6451,8 @@ paths:
                     type: string
                     description: The device serial number
                   granularity:
-                    type: string
+                    allOf:
+                      - $ref: "#/components/schemas/TelemetryGranularity"
                     description: The granularity of the telemetry data. Possible values are 'week',
                       'day', '15mins', '5mins'. Default is 'day'
                   total_devices:
@@ -6736,9 +6715,10 @@ paths:
                   system_id:
                     type: integer
                   battery_mode:
-                    type: string
+                    allOf:
+                      - $ref: "#/components/schemas/BatteryMode"
                     description: Current battery mode of the system. Possible values are Savings
-                      Mode, Full Backup, and Self - Consumption
+                      Mode, Full Backup, and Self-consumption
                   reserve_soc:
                     type: integer
                     description: Reserve soc for the current mode
@@ -6769,7 +6749,7 @@ paths:
                 response:
                   value:
                     system_id: 1765
-                    battery_mode: Self - Consumption
+                    battery_mode: Self-consumption
                     reserve_soc: 95
                     energy_independence: enabled
                     charge_from_grid: disabled
@@ -6956,7 +6936,8 @@ paths:
               type: object
               properties:
                 battery_mode:
-                  type: string
+                  allOf:
+                    - $ref: "#/components/schemas/BatteryMode"
                   description: To update battery mode of the system (case sensitive) - "Savings
                     Mode" / "Self-consumption" / "Full Backup"
                 reserve_soc:
@@ -6987,7 +6968,8 @@ paths:
                   system_id:
                     type: integer
                   battery_mode:
-                    type: string
+                    allOf:
+                      - $ref: "#/components/schemas/BatteryMode"
                     description: Current battery mode of the system
                   reserve_soc:
                     type: integer
@@ -7019,7 +7001,7 @@ paths:
                 response:
                   value:
                     system_id: 1765
-                    battery_mode: self-consumption
+                    battery_mode: Self-consumption
                     reserve_soc: 95
                     energy_independence: enabled
                     charge_from_grid: disabled
@@ -8042,7 +8024,8 @@ paths:
                   description: Load Name of the load. Load Name cannot be changed. It is only used
                     to identify the dry contact that needs to be updated.
                 mode:
-                  type: string
+                  allOf:
+                    - $ref: "#/components/schemas/LoadControlMode"
                   description: Mode. Possible values are "Scheduled", "Basic",
                     "Advanced_BatteryPowered", "Manual_always_not_powered",
                     "Manual_always_powered", "Advanced_GeneratorPowered"
@@ -8086,7 +8069,8 @@ paths:
                           type: boolean
                           description: Indicates if the homeowner can override the load control settings
                         mode:
-                          type: string
+                          allOf:
+                            - $ref: "#/components/schemas/LoadControlMode"
                           description: Current load control configuration
                         soc_low:
                           type: integer
@@ -8337,12 +8321,7 @@ paths:
           description: The granularity of the telemetry data. Possible values are 'week',
             'day', '15mins', '5mins'. Default is 'day'
           schema:
-            type: string
-            enum:
-              - 5mins
-              - 15mins
-              - day
-              - week
+            $ref: "#/components/schemas/TelemetryGranularity"
       responses:
         "200":
           description: Energy import telemetry in intervals
@@ -8355,7 +8334,8 @@ paths:
                     type: integer
                     description: The unique numeric ID of the system
                   granularity:
-                    type: string
+                    allOf:
+                      - $ref: "#/components/schemas/TelemetryGranularity"
                     description: The granularity of the telemetry data. Possible values are 'week',
                       'day', '15mins', '5mins'. Default is 'day'
                   total_devices:
@@ -8623,12 +8603,7 @@ paths:
           description: The granularity of the telemetry data. Possible values are 'week',
             'day', '15mins', '5mins'. Default is 'day'
           schema:
-            type: string
-            enum:
-              - 5mins
-              - 15mins
-              - day
-              - week
+            $ref: "#/components/schemas/TelemetryGranularity"
       responses:
         "200":
           description: Energy export telemetry in intervals
@@ -8641,7 +8616,8 @@ paths:
                     type: integer
                     description: The unique numeric ID of the system
                   granularity:
-                    type: string
+                    allOf:
+                      - $ref: "#/components/schemas/TelemetryGranularity"
                     description: The granularity of the telemetry data. Possible values are 'week',
                       'day', '15mins', '5mins'. Default is 'day'
                   total_devices:
@@ -8904,9 +8880,10 @@ paths:
                       data:
                         properties:
                           battery_mode:
+                            allOf:
+                              - $ref: "#/components/schemas/BatteryMode"
                             description: Battery mode of the site; Possible values are Savings Mode, Full
                               Backup, and Self-consumption
-                            type: string
                           battery_power:
                             description: Battery power in watts; Power will be positive in case of discharge
                               and negative in case of charge
@@ -10629,6 +10606,55 @@ components:
           type: string
           description: statusCode
           example: "405"
+    SystemConnectionType:
+      type: string
+      description: Connection type reported by the system.
+      enum:
+        - ethernet
+        - wifi
+        - cellular
+    MicroinverterAttachmentType:
+      type: string
+      description: Microinverter attachment style configured for the system.
+      enum:
+        - rack_mount
+        - zep
+        - acm
+        - bipv
+        - frame_mount
+        - railless_mount
+    EventStatus:
+      type: string
+      description: Lifecycle state reported for events.
+      enum:
+        - Info
+        - Open
+        - Closed
+    BatteryMode:
+      type: string
+      description: Battery operating mode configured for supported systems.
+      enum:
+        - Savings Mode
+        - Full Backup
+        - Self-consumption
+    TelemetryGranularity:
+      type: string
+      description: Interval size used when returning telemetry time series.
+      enum:
+        - 5mins
+        - 15mins
+        - day
+        - week
+    LoadControlMode:
+      type: string
+      description: Supported load control operating modes.
+      enum:
+        - Scheduled
+        - Basic
+        - Advanced_BatteryPowered
+        - Manual_always_not_powered
+        - Manual_always_powered
+        - Advanced_GeneratorPowered
     DefaultCommandResponse:
       type: object
       properties:
@@ -10653,7 +10679,8 @@ components:
       type: object
       properties:
         granularity:
-          type: string
+          allOf:
+            - $ref: "#/components/schemas/TelemetryGranularity"
           example: day
         consumption:
           type: array
@@ -11255,7 +11282,8 @@ components:
       type: object
       properties:
         status:
-          type: string
+          allOf:
+            - $ref: "#/components/schemas/EventStatus"
           example: Info
         triggered_date:
           type: integer
